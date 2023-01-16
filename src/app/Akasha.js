@@ -1,13 +1,20 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import './Akasha.css';
+import LeyLines from "./Core/LeyLine";
+import App from "./Page/App";
 
-import './App.css';
-import Editor from "./Component/Editor/Editor";
-
-function App() {
-  return (
-    <div className="App">
-      <Editor/>
-    </div>
-  );
+function Akasha() {
+    return (
+        <LeyLines>
+            <BrowserRouter>
+                <Routes>
+                    <Route path={'/app'} />
+                    <Route path={'*'} element={<App />} />
+                </Routes>
+            </BrowserRouter>
+        </LeyLines>
+    )
 }
 
-export default App;
+export default Akasha
+
