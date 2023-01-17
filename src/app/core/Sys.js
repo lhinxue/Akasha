@@ -7,6 +7,12 @@ function Response(code, data) {
     }
 }
 
+// disableEvent
+function disableEvent(event) {
+    event.stopPropagation()
+    event.preventDefault()
+}
+
 // attempt
 function attempt(func, obj) {
     try {
@@ -104,10 +110,10 @@ function upload(objFile, onLoad = e => console.log(e)) {
 
 // download
 function download(strContent, strFileName, strFileSuffix = 'irminsul') {
-    let objFile = new File([strContent], strFileName + '.' + strFileSuffix, {type: 'text/plain;charset=utf-8'})
+    let objFile = new File([strContent], strFileName + '.' + strFileSuffix, { type: 'text/plain;charset=utf-8' })
     FileSaver.saveAs(objFile)
 }
 
 export default {
-    attempt, cipher, upload, download
+    disableEvent, attempt, cipher, upload, download
 }

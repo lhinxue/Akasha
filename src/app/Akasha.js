@@ -1,7 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import './Akasha.css';
-import LeyLines from "./Core/LeyLine";
-import App from "./Page/App";
+import Alert from "./components/Alert/Alert";
+import LeyLines from "./core/LeyLine";
+import App from "./pages/App";
 
 function Akasha() {
     return (
@@ -12,6 +13,7 @@ function Akasha() {
                     <Route path={'*'} element={<App />} />
                 </Routes>
             </BrowserRouter>
+            <Alert />
         </LeyLines>
     )
 }

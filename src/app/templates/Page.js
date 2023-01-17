@@ -1,6 +1,6 @@
 import { Box, createTheme, ThemeProvider } from '@mui/material'
 import { useContext } from 'react'
-import { LeyLine } from '../Core/LeyLine'
+import { LeyLine } from '../core/LeyLine'
 
 function Page({
     children,
