@@ -5,6 +5,7 @@ import { Box, Breadcrumbs, Typography } from "@mui/material";
 import { LeyLine } from "../../core/LeyLine";
 import IconButton from "../Button/IconButton";
 import Remix from "../Icon/Remix";
+import sys from "../../core/sys";
 
 
 const EDITOR_CONFIG = {
@@ -35,7 +36,7 @@ const EDITOR_CONFIG = {
 
 export default function Editor() {
 
-    const { Service, Api, Color } = useContext(LeyLine)
+    const { Service, Api, Color, Irminsul } = useContext(LeyLine)
 
     const [strDocument, setStrDocument] = useState('')
 
@@ -126,7 +127,10 @@ export default function Editor() {
                         }
                     </Breadcrumbs>
                     <Box>
-                        <IconButton icon={<Remix.arrowRight />} />
+                        <IconButton icon={<Remix.arrowRight />} onClick={() => {
+                            console.log(sys.recursivelySet(Irminsul._, Api.Node.split('=>'), '_', {}))
+
+                        }} />
                         <IconButton icon={<Remix.arrowRight />} />
                     </Box>
                 </Box>

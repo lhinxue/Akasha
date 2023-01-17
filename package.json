@@ -12,7 +12,7 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
-    "ckeditor5-custom-build": "file:./src/App/Component/Editor/CKEditor5",
+    "ckeditor5-custom-build": "file:./src/app/components/Editor/CKEditor5",
     "file-saver": "^2.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

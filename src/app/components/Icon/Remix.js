@@ -29,10 +29,10 @@ const Remix = {
             </SvgIcon>
         )
     },
-    folders: (props) => {
+    add: (props) => {
         return (
             <SvgIcon {...props}>
-                <path fill="none" d="M0 0h24v24H0z" /><path d="M6 7V4a1 1 0 0 1 1-1h6.414l2 2H21a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-3v3a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h3zm0 2H4v10h12v-2H6V9zm2-4v10h12V7h-5.414l-2-2H8z" />
+                <path fill="none" d="M0 0h24v24H0z" /><path d="M11 11V7h2v4h4v2h-4v4h-2v-4H7v-2h4zm1 11C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" />
             </SvgIcon>
         )
     },
@@ -40,6 +40,34 @@ const Remix = {
         return (
             <SvgIcon {...props}>
                 <path fill="none" d="M0 0H24V24H0z" /><path d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12h2c0 4.418 3.582 8 8 8s8-3.582 8-8-3.582-8-8-8C9.25 4 6.824 5.387 5.385 7.5H8v2H2v-6h2V6c1.824-2.43 4.729-4 8-4zm1 5v4.585l3.243 3.243-1.415 1.415L11 12.413V7h2z" />
+            </SvgIcon>
+        )
+    },
+    question: (props) => {
+        return (
+            <SvgIcon {...props}>
+                <path fill="none" d="M0 0h24v24H0z" /><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-1-5h2v2h-2v-2zm2-1.645V14h-2v-1.5a1 1 0 0 1 1-1 1.5 1.5 0 1 0-1.471-1.794l-1.962-.393A3.501 3.501 0 1 1 13 13.355z" />
+            </SvgIcon>
+        )
+    },
+    arrowLineDown: (props) => {
+        return (
+            <SvgIcon {...props}>
+                <path fill="none" d="M0 0h24v24H0z" /><path d="M12 13.172l4.95-4.95 1.414 1.414L12 16 5.636 9.636 7.05 8.222z" />
+            </SvgIcon>
+        )
+    },
+    arrowLineRight: (props) => {
+        return (
+            <SvgIcon {...props}>
+                <path fill="none" d="M0 0h24v24H0z" /><path d="M13.172 12l-4.95-4.95 1.414-1.414L16 12l-6.364 6.364-1.414-1.414z" />
+            </SvgIcon>
+        )
+    },
+    fileLock: (props) => {
+        return (
+            <SvgIcon {...props}>
+                <path fill="none" d="M0 0h24v24H0z" /><path d="M18 2a1 1 0 0 1 1 1v7h-2V4H7v16h5v2H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h12zm0 10a3 3 0 0 1 3 3v1h1v5a1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1v-5h1v-1a3 3 0 0 1 3-3zm2 6h-4v2h4v-2zm-2-4c-.508 0-1 .45-1 1v1h2v-1a1 1 0 0 0-1-1z" />
             </SvgIcon>
         )
     },

@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import Sys from "./Sys";
+import Sys from "./sys";
 
 const LeyLine = createContext()
 
@@ -14,47 +14,19 @@ function LeyLines({ children }) {
         name: 'Irminsul',
         _: {
             'a4522850-ac16-4ccc-a0bf-bb48a471f622': {
-                name: 'Example',
+                name: 'Parent Node',
+                content: '<p>The "Folder" can also be an document.</p>',
                 _: {
                     '9f2022aa-93d2-11ed-a1eb-0242ac120002': {
-                        name: 'Example',
-                        _: {
-                            'a306d40e-93d2-11ed-a1eb-0242ac120002': {
-                                name: 'Example',
-                                content: 'Example text.'
-                            }
-                        }
+                        name: 'Child Node',
+                        content: '<p>The "File" can turn into a folder.</p>'
                     }
                 }
             },
-            'a4522850-ac16-4ccc-a0bf-bb48a471f6221': {
-                name: 'Example1',
-                _: {
-                    '9f2022aa-93d2-11ed-a1eb-0242ac1200021': {
-                        name: 'Example1',
-                        _: {
-                            'a306d40e-93d2-11ed-a1eb-0242ac1200021': {
-                                name: 'Example1',
-                                content: 'Example text.'
-                            }
-                        }
-                    }
-                }
-            },
-            'a4522850-ac16-4ccc-a0bf-bb48a471f62211': {
-                name: 'Example1',
-                _: {
-                    '9f2022aa-93d2-11ed-a1eb-0242ac12000211': {
-                        name: 'Example1',
-                        _: {
-                            'a306d40e-93d2-11ed-a1eb-0242ac12000211': {
-                                name: 'Example1',
-                                content: 'Example text.'
-                            }
-                        }
-                    }
-                }
-            },
+            'a306d40e-93d2-11ed-a1eb-0242ac120002': {
+                name: 'Read Me',
+                content: 'Example text.'
+            }
         }
     })
     const [Color, setColor] = useState({ primary: '#7b1fa2', secondary: '#ba68c8' })
@@ -116,6 +88,32 @@ function LeyLines({ children }) {
         }
         return ims.content
     }
+    const recursivelySet = (obj, keys, id, value) => {
+        if (keys.length === 0) {
+            return ({
+                ...obj,
+                [id]: value
+            })
+        } else {
+            let key = keys.shift()
+            return ({
+                ...obj,
+                [key]: recursivelySet(obj[key], keys, id, value)
+            })
+        }
+    }
+
+
+
+    const setNodeContent = (key) => {
+        setIrminsul(ims => {
+
+
+
+        })
+    }
+
+
     const updateColor = (primary, secondary) => setColor(color => ({ primary: primary, secondary: secondary }))
     const forceReRender = () => setReRender(re => !re)
 

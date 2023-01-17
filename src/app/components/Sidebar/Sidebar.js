@@ -14,7 +14,7 @@ function Sidebar() {
     const [staSidebar, setStaSidebar] = useState(true)
 
     // Dynamic Variables
-    const [intTabId, setIntTabId] = useState(1)
+    const [intTabId, setIntTabId] = useState(0)
     const [intSearchZ, setIntSearchZ] = useState(15)
     const [intSettingZ, setIntSettingZ] = useState(15)
 
@@ -96,7 +96,7 @@ function Sidebar() {
                 overflowX: 'hidden',
                 '&:first-child': {
                     borderRight: '1px solid silver',
-                    '& h1': {
+                    '& .ExplorerHeader': {
                         height: '34px',
                         lineHeight: '34px',
                         padding: '0 10px',
@@ -105,6 +105,10 @@ function Sidebar() {
                         letterSpacing: '.2rem',
                         borderBottom: '1px solid silver',
                         marginBottom: '5px',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between'
                     },
                     '& .Explorer': {
                         paddingLeft: '2px',
@@ -125,17 +129,19 @@ function Sidebar() {
                 <Box className={'Toolbar'}>
                     <Box>
                         <IconButton icon={staSidebar ? <Remix.menuFold /> : <Remix.menuUnfold />} onClick={onStaSidebarChange} />
-                        <IconButton icon={<Remix.history />} onClick={() => Service.Alert.on('error', 'Invalid!')} />
 
+                    </Box>
+                    <Box>
                         <IconButton icon={<Remix.history />} onClick={() => Service.Alert.off()} />
+                        <IconButton icon={<Remix.fileLock />} />
+                        <IconButton icon={<Remix.question />} />
                     </Box>
 
-                    <IconButton icon={<Remix.history />} />
 
                 </Box>
                 <Box className={'Content'}>
                     <Tabs className={'Tabs'} value={intTabId} onChange={(e, v) => setIntTabId(v)} >
-                        <Tab icon={<Remix.folders fontSize='small' />} value={0} />
+                        <Tab icon={<Remix.folder fontSize='small' />} value={0} />
                         <Tab icon={<Remix.search fontSize='small' />} value={1} />
                         <Tab icon={<Remix.setting fontSize='small' />} value={2} />
                     </Tabs>
