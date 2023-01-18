@@ -206,18 +206,14 @@ export default function Editor() {
         <>
             <Box className={'Editor'} sx={sx}>
                 <Box className={'Header'}>
-                    <Box>
-                        {
-                            readOnly ?
-                                <IconButton icon={<Remix.edit />} onClick={() => {
-                                    editDocument()
-                                }} tooltip={'Start Editing'} tooltipPosition={'bottom'} /> :
-                                <IconButton icon={<Remix.preview />} onClick={() => {
-                                    viewDocument()
-                                }} tooltip={'Preview'} tooltipPosition={'bottom'} />
-                        }
-                    </Box>
 
+                    <Box>
+                        <IconButton icon={<Remix.save />} onClick={() => {
+                            let strDocName = Service.getNode(Api.Node.split('=>'), 'name')
+                            Service.setNode(Api.Node.split('=>'), 'content', editor.getData(), () => Service.alertOn(1, '"' + strDocName + '" Saved', 3))
+                        }} tooltip={'Save'} tooltipPosition={'left'} />
+
+                    </Box>
                     <Breadcrumbs className='Breadcrumbs' separator='·'>
                         {
                             Service.Node.getPath(Api.Node).map(
@@ -228,11 +224,15 @@ export default function Editor() {
                         }
                     </Breadcrumbs>
                     <Box>
-                        <IconButton icon={<Remix.save />} onClick={() => {
-                            let strDocName = Service.getNode(Api.Node.split('=>'), 'name')
-                            Service.setNode(Api.Node.split('=>'), 'content', editor.getData(), () => Service.alertOn(1, '"' + strDocName + '" Saved', 3))
-                        }} tooltip={'Save'} tooltipPosition={'left'} />
-
+                        {
+                            readOnly ?
+                                <IconButton icon={<Remix.edit />} onClick={() => {
+                                    editDocument()
+                                }} tooltip={'Start Editing'} tooltipPosition={'bottom'} /> :
+                                <IconButton icon={<Remix.preview />} onClick={() => {
+                                    viewDocument()
+                                }} tooltip={'Preview'} tooltipPosition={'bottom'} />
+                        }
                     </Box>
                 </Box>
                 <CKEditor

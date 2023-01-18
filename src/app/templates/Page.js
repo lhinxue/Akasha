@@ -5,7 +5,8 @@ import { LeyLine } from '../core/LeyLine'
 function Page({
     children,
     gray = false,
-    sx = {}
+    sx = {},
+    z = 10,
 }) {
 
     // LeyLine
@@ -26,7 +27,7 @@ function Page({
 
     return (
         <ThemeProvider theme={theme}>
-            <Box className='Page' sx={{ width: '100%', height: '100%', display: 'flex', ...sx }}>
+            <Box className='Page' sx={{ position: 'absolute', width: '100%', height: '100%', display: 'flex', zIndex: z, ...sx }}>
                 {children}
             </Box>
         </ThemeProvider>
