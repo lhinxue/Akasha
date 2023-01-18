@@ -7,12 +7,7 @@ import App from "./pages/App";
 function Akasha() {
     return (
         <LeyLines>
-            <BrowserRouter>
-                <Routes>
-                    <Route path={'/app'} />
-                    <Route path={'*'} element={<App />} />
-                </Routes>
-            </BrowserRouter>
+            <App />
             <Alert />
         </LeyLines>
     )

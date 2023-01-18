@@ -1,12 +1,14 @@
-import { Box, Tab, Tabs } from "@mui/material";
+import { Box, List, ListItem, ListItemButton, Tab, Tabs } from "@mui/material";
 import { useContext, useState } from "react";
 import { LeyLine } from "../../core/LeyLine";
+import sys from "../../core/sys";
 import IconButton from "../Button/IconButton";
+import DisplayDialog from "../Dialog/DisplayDialog";
 import Explorer from "../Explorer/Explorer";
 import Remix from "../Icon/Remix";
 
 function Sidebar() {
-    const { Irminsul, Service } = useContext(LeyLine)
+    const { Irminsul, Service, history } = useContext(LeyLine)
 
     // State
     const [staSearch, setStaSearch] = useState(false)
@@ -56,18 +58,25 @@ function Sidebar() {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'space-between',
+            '&>div:first-of-type': {
+                borderBottom: "1px solid silver",
+                height: '35px'
+            },
             '& button': {
                 height: '32px',
                 width: '32px',
-                margin: '2px'
+                margin: '2px',
+
             }
         },
         '& .Content': {
             borderRight: '1px solid silver',
             height: '100%',
             width: '300px',
+            maxWidth: '100%',
             overflow: 'hidden',
             '& .Tabs': {
+                overflow: 'hidden',
                 width: '100%',
                 height: '35px',
                 minHeight: '35px',
@@ -76,26 +85,24 @@ function Sidebar() {
 
                 },
                 '& button': {
-                    height: '36px',
-                    minHeight: '36px',
-                    maxWidth: '40px',
-                    minWidth: '40px',
+                    height: '32px',
+                    width: '32px',
+                    margin: '2px',
                 }
             }
         },
         '& .Scroller': {
             height: '100%',
-            width: '902px',
+            width: '900px',
             overflow: 'hidden',
             display: 'flex',
-            transform: intTabId === 0 ? 'translate(0px)' : intTabId === 1 ? 'translate(-301px)' : intTabId === 2 ? 'translate(-602px)' : 'translate(0px)',
+            transform: intTabId === 0 ? 'translate(0px)' : intTabId === 1 ? 'translate(-300px)' : intTabId === 2 ? 'translate(-600px)' : 'translate(0px)',
             transition: 'all .3s ease',
             '& .Panel': {
                 height: 'calc(100% - 37px)',
                 width: '300px',
                 overflowX: 'hidden',
-                '&:first-child': {
-                    borderRight: '1px solid silver',
+                '&:first-of-type': {
                     '& .ExplorerHeader': {
                         height: '34px',
                         lineHeight: '34px',
@@ -115,51 +122,53 @@ function Sidebar() {
                     }
 
                 },
-                '&:nth-child(2)': {
-                    borderRight: '1px solid silver'
+                '&:nth-of-type(2)': {
                 }
             }
         }
     }
 
+    const [historyOpen, setHistoryOpen] = useState(false)
+
     return (
         <>
 
-            <Box className={'Sidebar'} sx={sx}>
+            <Box className={'Sidebar'} sx={sx} onContextMenu={sys.disableEvent}>
                 <Box className={'Toolbar'}>
                     <Box>
-                        <IconButton icon={staSidebar ? <Remix.menuFold /> : <Remix.menuUnfold />} onClick={onStaSidebarChange} />
-
+                        <IconButton icon={staSidebar ? <Remix.menuFold /> : <Remix.menuUnfold />} onClick={onStaSidebarChange} tooltip={staSidebar ? 'Hide Sidebar' : 'Show Sidebar'} tooltipPosition={'right'} />
                     </Box>
                     <Box>
-                        <IconButton icon={<Remix.history />} onClick={() => Service.Alert.off()} />
-                        <IconButton icon={<Remix.fileLock />} />
-                        <IconButton icon={<Remix.question />} />
+
+                        <IconButton icon={<Remix.fileLock />} tooltip={'Open New File'} tooltipPosition={'right'} />
+                        <IconButton icon={<Remix.question />} onClick={() => setHistoryOpen(true)} tooltip={'About Akasha'} tooltipPosition={'right'} />
                     </Box>
 
 
                 </Box>
                 <Box className={'Content'}>
-                    <Tabs className={'Tabs'} value={intTabId} onChange={(e, v) => setIntTabId(v)} >
-                        <Tab icon={<Remix.folder fontSize='small' />} value={0} />
-                        <Tab icon={<Remix.search fontSize='small' />} value={1} />
-                        <Tab icon={<Remix.setting fontSize='small' />} value={2} />
-                    </Tabs>
+                    <Box className={'Tabs'} >
+                        <IconButton icon={<Remix.folder />} on={intTabId === 0} onClick={() => setIntTabId(0)} tooltip={'Content'} tooltipPosition={'bottom'} />
+                        <IconButton icon={<Remix.search />} on={intTabId === 1} onClick={() => setIntTabId(1)} tooltip={'Search'} tooltipPosition={'bottom'} />
+                        <IconButton icon={<Remix.setting />} on={intTabId === 2} onClick={() => setIntTabId(2)} tooltip={'Setting'} tooltipPosition={'bottom'} />
+                    </Box>
                     <Box className={'Scroller'}>
-                        <Box className={'Panel Panel1'}>
+                        <Box className={'Panel Explorer'}>
                             <Explorer />
                         </Box>
-                        <Box className={'Panel Panel2'}>
-                            s
+                        <Box className={'Panel Search'}>
+                            Search
                         </Box>
-                        <Box className={'Panel Panel3'}>
-                            st
+                        <Box className={'Panel Setting'}>
+                            Setting
                         </Box>
                     </Box>
 
                 </Box>
             </Box>
+            <DisplayDialog on={historyOpen} onClose={() => setHistoryOpen(false)} title={'About Akasha'}>
 
+            </DisplayDialog>
         </>
 
     )

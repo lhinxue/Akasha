@@ -79,7 +79,7 @@ function proliferate(strKey, strCatalyst = 'GreaterLordRukkhadevata', arrCatalys
 }
 
 // xor - Perform Exclusive or
-function xor(strA, strB) {
+function xor(strA, strB = '') {
     let strAns = ''
     if (strA.length === strB.length) {
         for (let i = 0; i < strA.length; i++) {

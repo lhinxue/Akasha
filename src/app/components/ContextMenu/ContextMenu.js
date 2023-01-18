@@ -48,11 +48,11 @@ export default function ContextMenu({
             open={on}
             onClose={onClose}
             anchorReference='anchorPosition'
-            anchorPosition={{ top: event.clientY, left: event.clientX }}
+            anchorPosition={{ top: event.clientY ?? 0, left: event.clientX ?? 0 }}
         >
             {
-                menus.map(mn =>
-                    <MenuItem color='primary' onClick={() => mn.onClick(event.target.id)}>
+                menus.map((mn, i) =>
+                    <MenuItem color='primary' key={i} onClick={() => mn.onClick(event.target.id)}>
                         {mn.name}
                     </MenuItem>
                 )

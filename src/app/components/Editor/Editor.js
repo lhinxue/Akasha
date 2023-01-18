@@ -1,53 +1,146 @@
 import Ckeditor from "ckeditor5-custom-build/build/ckeditor";
 import { CKEditor } from '@ckeditor/ckeditor5-react'
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Breadcrumbs, Typography } from "@mui/material";
 import { LeyLine } from "../../core/LeyLine";
 import IconButton from "../Button/IconButton";
 import Remix from "../Icon/Remix";
 import sys from "../../core/sys";
+import Downloader from "../Button/Downloader";
 
 
 const EDITOR_CONFIG = {
     toolbar: {
-        items: ['findAndReplace', '|', 'undo', 'redo', '|', 'alignment', '|', 'heading', '|', 'bold', 'italic', 'underline', 'strikethrough', 'code', 'highlight', 'removeFormat', '|', 'fontColor', 'fontBackgroundColor', 'fontFamily', 'fontSize', '|', 'bulletedList', 'numberedList', 'todoList', 'indent', 'outdent', '|', 'blockQuote', 'codeBlock', 'insertTable', '|', 'horizontalLine', 'specialCharacters', '|', 'link', 'imageUpload', 'mediaEmbed']
+        items: [
+            'findAndReplace',
+            '|',
+            'alignment',
+            '|',
+            'heading',
+            '|',
+            'bold',
+            'italic',
+            'underline',
+            'strikethrough',
+            'code',
+            'highlight:yellowMarker',
+            'removeFormat',
+            '|',
+            'fontColor',
+            'fontBackgroundColor',
+            'fontFamily',
+            'fontSize',
+            '|',
+            'bulletedList',
+            'numberedList',
+            'todoList',
+            'indent',
+            'outdent',
+            'blockQuote',
+            'codeBlock',
+            '|',
+            'insertTable',
+            '|',
+            'link',
+            'imageUpload',
+            'mediaEmbed',
+            '|',
+            'horizontalLine',
+            'specialCharacters'
+        ]
     },
     language: 'en',
     image: {
         toolbar: [
-            'imageTextAlternative',
+            'linkImage',
             'toggleImageCaption',
             'imageStyle:inline',
-            'imageStyle:block',
-            'imageStyle:side',
-            'linkImage'
+            'imageStyle:wrapText',
+            'imageStyle:breakText',
+            'resizeImage:50',
+            'resizeImage:original'
         ]
     },
     table: {
         contentToolbar: [
+            'tableProperties',
+            'tableCellProperties',
             'tableColumn',
             'tableRow',
-            'mergeTableCells',
-            'tableCellProperties',
-            'tableProperties'
+            'mergeTableCells'
         ]
     }
 }
 
 export default function Editor() {
 
-    const { Service, Api, Color, Irminsul } = useContext(LeyLine)
+    const { Service, Api, Color, Irminsul, savingStatus, history } = useContext(LeyLine)
 
     const [strDocument, setStrDocument] = useState('')
+    const [readOnly, setReadOnly] = useState(true)
+    const [lock, setLock] = useState(true)
 
+    const lockDocument = (editor) => {
+        setLock(true)
+        editor.enableReadOnlyMode('Kiana')
+    }
+    const unlockDocument = () => {
+        setLock(false)
+    }
+
+    const editDocument = () => {
+        if (lock) return
+        editor.disableReadOnlyMode('Kiana')
+        setReadOnly(false)
+    }
+    const viewDocument = () => {
+        if (lock) return
+        editor.enableReadOnlyMode('Kiana')
+        setReadOnly(true)
+    }
+
+
+    const [editor, setEditor] = useState(undefined)
     const onReady = editor => {
-
-        console.log(editor.commands)
+        setEditor(editor)
+        lockDocument(editor)
     }
 
     const onChange = (event, editor) => {
-        setStrDocument(editor.getData())
+
+        // Service.setNode(Api.Node.split('=>'), 'content', editor.getData())
+        // setStrDocument(editor.getData())
     }
+
+    const [escapeFirst, setEscapeFirst] = useState(true)
+
+    useEffect(() => {
+        if (Api.Node !== '') {
+            unlockDocument()
+            if (history.length > 0) {
+                if (escapeFirst) {
+                    setEscapeFirst(false)
+                } else if (strDocument !== editor.getData()) {
+                    let strDocName = Service.getNode(history[history.length - 1].split('=>'), 'name')
+                    Service.alertOn(0, 'Saving "' + strDocName + '"')
+                    Service.setNode(history[history.length - 1].split('=>'), 'content', editor.getData(), () => Service.alertOn(1, '"' + strDocName + '" Saved', 3))
+
+                }
+            }
+            Service.updateHistory(Api.Node)
+            setStrDocument(Service.getNode(Api.Node.split('=>'), 'content'))
+        } else {
+            setStrDocument('')
+            try {
+                lockDocument(editor)
+            } catch (error) { }
+
+        }
+
+    }, [Api.Node])
+
+
+
 
     const sx = {
         flexGrow: 1,
@@ -113,8 +206,15 @@ export default function Editor() {
             <Box className={'Editor'} sx={sx}>
                 <Box className={'Header'}>
                     <Box>
-                        <IconButton icon={<Remix.arrowLeft />} />
-                        <IconButton icon={<Remix.arrowRight />} />
+                        {
+                            readOnly ?
+                                <IconButton icon={<Remix.edit />} onClick={() => {
+                                    editDocument()
+                                }} tooltip={'Start Editing'} tooltipPosition={'bottom'} /> :
+                                <IconButton icon={<Remix.preview />} onClick={() => {
+                                    viewDocument()
+                                }} tooltip={'Preview'} tooltipPosition={'bottom'} />
+                        }
                     </Box>
 
                     <Breadcrumbs className='Breadcrumbs' separator='·'>
@@ -127,11 +227,11 @@ export default function Editor() {
                         }
                     </Breadcrumbs>
                     <Box>
-                        <IconButton icon={<Remix.arrowRight />} onClick={() => {
-                            console.log(sys.recursivelySet(Irminsul._, Api.Node.split('=>'), '_', {}))
+                        <IconButton icon={<Remix.save />} onClick={() => {
+                            let strDocName = Service.getNode(Api.Node.split('=>'), 'name')
+                            Service.setNode(Api.Node.split('=>'), 'content', editor.getData(), () => Service.alertOn(1, '"' + strDocName + '" Saved', 3))
+                        }} tooltip={'Save'} tooltipPosition={'left'} />
 
-                        }} />
-                        <IconButton icon={<Remix.arrowRight />} />
                     </Box>
                 </Box>
                 <CKEditor
@@ -141,6 +241,8 @@ export default function Editor() {
                     onReady={onReady}
                     onChange={onChange}
                 />
+                <Downloader />
+
             </Box>
         </>
     )

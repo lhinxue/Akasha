@@ -1,75 +1,118 @@
-import { createContext, useState } from "react";
-import Sys from "./sys";
-
+import { Alert } from "@mui/material";
+import { Component, createContext, useEffect, useState } from "react";
+import { v4 } from "uuid";
 const LeyLine = createContext()
 
-function LeyLines({ children }) {
 
 
-    const [Api, setApi] = useState({
-        Node: '',
-        Alert: {}
-    })
-    const [Irminsul, setIrminsul] = useState({
-        name: 'Irminsul',
-        _: {
-            'a4522850-ac16-4ccc-a0bf-bb48a471f622': {
-                name: 'Parent Node',
-                content: '<p>The "Folder" can also be an document.</p>',
+class LeyLines extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            Irminsul: {
+                name: 'Irminsul',
                 _: {
-                    '9f2022aa-93d2-11ed-a1eb-0242ac120002': {
-                        name: 'Child Node',
-                        content: '<p>The "File" can turn into a folder.</p>'
+                    'a4522850-ac16-4ccc-a0bf-bb48a471f622': {
+                        name: 'Parent Node',
+                        content: '<p>The "Folder" can also be an document.</p>',
+                        _: {
+                            '9f2022aa-93d2-11ed-a1eb-0242ac120002': {
+                                name: 'Child Node',
+                                content: '<p>The "File" can turn into a folder.</p>',
+                                _: {}
+                            }
+                        }
+                    },
+                    'a306d40e-93d2-11ed-a1eb-0242ac120002': {
+                        name: 'Read Me',
+                        content: 'Example text.',
+                        _: {}
                     }
                 }
             },
-            'a306d40e-93d2-11ed-a1eb-0242ac120002': {
-                name: 'Read Me',
-                content: 'Example text.'
-            }
-        }
-    })
-    const [Color, setColor] = useState({ primary: '#7b1fa2', secondary: '#ba68c8' })
-    const [reRender, setReRender] = useState(false)
+            Alert: {
+                on: false,
+                type: 0,
+                message: ''
+            },
+            Api: {
+                Node: '',
+                Alert: {}
+            },
+            history: [],
+            Color: { primary: '#7b1fa2', secondary: '#ba68c8' },
+            reRender: false,
 
-    const alertOn = (strType, strMessage, autoDestroy) => {
-        if (Api.Alert.on)
-            return
-        updateApi('Alert', {
-            on: true,
-            type: strType,
-            message: strMessage
+        }
+        this.updateApi = this.updateApi.bind(this)
+        this.alertOn = this.alertOn.bind(this)
+        this.alertOff = this.alertOff.bind(this)
+        this.getNodePath = this.getNodePath.bind(this)
+        this.getNode = this.getNode.bind(this)
+        this.setNode = this.setNode.bind(this)
+        this.addNode = this.addNode.bind(this)
+        this.deleteNode = this.deleteNode.bind(this)
+        this.moveNode = this.moveNode.bind(this)
+
+        this.updateHistory = this.updateHistory.bind(this)
+        this.clearRecordFromHistory = this.clearRecordFromHistory.bind(this)
+
+    }
+    updateApi(strKey, objValue) {
+        this.setState({
+            Api: {
+                ...this.state.Api,
+                [strKey]: objValue
+            }
         })
-        if (autoDestroy)
+    }
+
+    alertOn(intType, strMessage, autoDestroy) {
+
+        this.setState({
+            Alert: {
+                on: true,
+                type: intType,
+                message: strMessage
+            }
+        })
+        if (autoDestroy) {
             setTimeout(() => {
-                updateApi('Alert', {
-                    on: false,
-                    type: strType,
-                    message: strMessage
+                this.setState({
+                    Alert: {
+                        on: false,
+                        type: intType,
+                        message: strMessage
+                    }
                 })
             }, autoDestroy * 1000)
+        }
     }
-    const alertOff = () => {
-        updateApi('Alert', {
-            ...Api.Alert,
-            on: false
+
+    alertOff() {
+        this.setState({
+            Alert: {
+                ...this.state.Alert,
+                on: false
+            }
         })
     }
 
-
-
-    const updateApi = (strKey, objValue) => setApi(pre => ({ ...pre, [strKey]: objValue }))
-    const updateNode = (key) => updateApi('Node', key)
-    const getNodeName = (key) => {
-        let ims = Irminsul
-        for (const i of key.split('=>')) {
-            ims = ims._[i]
-        }
-        return ims.name
+    updateHistory(node) {
+        this.clearRecordFromHistory(node)
+        this.setState({ history: [...this.state.history, node] })
     }
-    const getNodePath = (key) => {
+
+    clearRecordFromHistory(node) {
+        let newHistory = []
+        for (let i = 0; i < this.state.history.length; i++) {
+            if (this.state.history[i] !== node) newHistory.push(this.state.history[i])
+        }
+        this.setState({ history: newHistory })
+    }
+    getNodePath(key) {
         try {
-            let ims = Irminsul,
+            let ims = this.state.Irminsul,
                 arrPath = []
             for (const i of key.split('=>')) {
                 ims = ims._[i]
@@ -81,69 +124,127 @@ function LeyLines({ children }) {
         }
 
     }
-    const getNodeContent = (key) => {
-        let ims = Irminsul
-        for (const i of key.split('=>')) {
-            ims = ims._[i]
+
+
+    getNode(arrKeys, strKey) {
+        if (arrKeys.length === 1 && arrKeys[0] === '') return ''
+        let strCommand = 'this.state.Irminsul._'
+        for (let i = 0; i < arrKeys.length; i++) {
+            strCommand = strCommand + '[`' + arrKeys[i] + '`]._'
         }
-        return ims.content
+        strCommand = strCommand.slice(0, -1)
+        strCommand = strCommand + strKey
+        return eval(strCommand)
     }
-    const recursivelySet = (obj, keys, id, value) => {
-        if (keys.length === 0) {
-            return ({
-                ...obj,
-                [id]: value
-            })
+
+    setNode(arrKeys, strKey, strContent, callback = () => 0) {
+        if (arrKeys.length === 1 && arrKeys[0] === '') return
+        let ims = this.state.Irminsul
+        let strCommand = 'ims._'
+        for (let i = 0; i < arrKeys.length; i++) {
+            strCommand = strCommand + '[`' + arrKeys[i] + '`]._'
+        }
+        strCommand = strCommand.slice(0, -1)
+        strCommand = strCommand + strKey + ' = strContent;this.setState({ Irminsul: ims }, callback)'
+
+        eval(strCommand)
+    }
+    addNode(arrKeys, name, callback = () => 0) {
+        if (arrKeys.length === 1 && arrKeys[0] === '') return
+        let ims = this.state.Irminsul
+        let strCommand = 'ims._'
+        for (let i = 0; i < arrKeys.length; i++) {
+            strCommand = strCommand + '[`' + arrKeys[i] + '`]._'
+        }
+        strCommand = strCommand + '[`' + v4() + '`] = {name: name, content: "", _: {}};this.setState({ Irminsul: ims }, callback)'
+
+        eval(strCommand)
+    }
+
+    deleteNode(arrKeys, callback = () => 0) {
+        if (arrKeys.length === 1 && arrKeys[0] === '') return
+        let ims = this.state.Irminsul
+        let strCommand = 'delete ims._'
+        for (let i = 0; i < arrKeys.length; i++) {
+            strCommand = strCommand + '[`' + arrKeys[i] + '`]._'
+        }
+        strCommand = strCommand.slice(0, -2)
+        strCommand = strCommand + ';this.setState({ Irminsul: ims }, callback)'
+
+        eval(strCommand)
+    }
+
+    moveNode(arrKeysFrom, arrKeysTo, callback = () => 0, onError = () => 0) {
+        let ims = this.state.Irminsul
+        let nodeKey = arrKeysFrom[arrKeysFrom.length - 1]
+        if (arrKeysTo === '') {
+            let strCommand = 'let toBeMoved = ims._'
+            for (let i = 0; i < arrKeysFrom.length; i++) {
+                strCommand = strCommand + '[`' + arrKeysFrom[i] + '`]._'
+            }
+            strCommand = strCommand.slice(0, -2) + '; delete ims._'
+            for (let i = 0; i < arrKeysFrom.length; i++) {
+                strCommand = strCommand + '[`' + arrKeysFrom[i] + '`]._'
+            }
+            strCommand = strCommand.slice(0, -2) + '; ims._' + '[`' + nodeKey + '`] = toBeMoved;this.setState({ Irminsul: ims }, callback())'
+            eval(strCommand)
         } else {
-            let key = keys.shift()
-            return ({
-                ...obj,
-                [key]: recursivelySet(obj[key], keys, id, value)
-            })
+            if (arrKeysTo.includes(nodeKey)) {
+                onError('You cannot move a Node under its children')
+                return
+            }
+            let strCommand = 'let toBeMoved = ims._'
+            for (let i = 0; i < arrKeysFrom.length; i++) {
+                strCommand = strCommand + '[`' + arrKeysFrom[i] + '`]._'
+            }
+            strCommand = strCommand.slice(0, -2) + '; delete ims._'
+            for (let i = 0; i < arrKeysFrom.length; i++) {
+                strCommand = strCommand + '[`' + arrKeysFrom[i] + '`]._'
+            }
+            strCommand = strCommand.slice(0, -2) + '; ims._'
+            for (let i = 0; i < arrKeysTo.length; i++) {
+                strCommand = strCommand + '[`' + arrKeysTo[i] + '`]._'
+            }
+            strCommand = strCommand + '[`' + nodeKey + '`] = toBeMoved;this.setState({ Irminsul: ims }, callback)'
+            eval(strCommand)
         }
+
+
+
     }
 
-
-
-    const setNodeContent = (key) => {
-        setIrminsul(ims => {
-
-
-
-        })
-    }
-
-
-    const updateColor = (primary, secondary) => setColor(color => ({ primary: primary, secondary: secondary }))
-    const forceReRender = () => setReRender(re => !re)
-
-
-    return (
-        <LeyLine.Provider value={{
-            Api: Api,
-            Service: {
-                Node: {
-                    set: (key) => updateApi('Node', key),
-                    getName: getNodeName,
-                    getPath: getNodePath,
-                    getContent: getNodeContent,
+    render() {
+        return (
+            <LeyLine.Provider value={{
+                Api: this.state.Api,
+                Alert: this.state.Alert,
+                Service: {
+                    Node: {
+                        set: (key) => this.updateApi('Node', key),
+                        getPath: this.getNodePath,
+                    },
+                    getNode: this.getNode,
+                    setNode: this.setNode,
+                    addNode: this.addNode,
+                    deleteNode: this.deleteNode,
+                    moveNode: this.moveNode,
+                    updateHistory: this.updateHistory,
+                    clearRecordFromHistory: this.clearRecordFromHistory,
+                    alertOn: this.alertOn,
+                    alertOff: this.alertOff
                 },
-                Alert: {
-                    on: alertOn,
-                    off: alertOff
-                }
-            },
-            Irminsul: Irminsul,
-            Color: {
-                primary: Color.primary,
-                secondary: Color.secondary,
-                set: updateColor
-            },
-            reRender: reRender
-        }}>
-            {children}
-        </LeyLine.Provider>
-    )
+                history: this.state.history,
+                Irminsul: this.state.Irminsul,
+                Color: {
+                    primary: this.state.Color.primary,
+                    secondary: this.state.Color.secondary,
+                },
+                reRender: this.state.reRender
+            }}>
+                {this.props.children}
+            </LeyLine.Provider>
+        )
+    }
 }
 
 export default LeyLines
