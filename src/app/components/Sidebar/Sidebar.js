@@ -50,6 +50,7 @@ function Sidebar() {
         display: 'flex',
         transition: 'all .3s ease',
         overflow: 'hidden',
+        maxWidth: '100vw',
         '& .Toolbar': {
             borderRight: '1px solid silver',
             width: '36px',
@@ -73,7 +74,7 @@ function Sidebar() {
             borderRight: '1px solid silver',
             height: '100%',
             width: '300px',
-            maxWidth: '100%',
+            maxWidth: 'calc(100vw - 37px)',
             overflow: 'hidden',
             '& .Tabs': {
                 overflow: 'hidden',
@@ -94,9 +95,10 @@ function Sidebar() {
         '& .Scroller': {
             height: '100%',
             width: '900px',
+            maxWidth: 'calc(300vw - 111px)',
             overflow: 'hidden',
             display: 'flex',
-            transform: intTabId === 0 ? 'translate(0px)' : intTabId === 1 ? 'translate(-300px)' : intTabId === 2 ? 'translate(-600px)' : 'translate(0px)',
+            transform: intTabId === 0 ? 'translate(0px)' : intTabId === 1 ? 'translate(-33.33%)' : intTabId === 2 ? 'translate(-66.66%)' : 'translate(0px)',
             transition: 'all .3s ease',
             '& .Panel': {
                 height: 'calc(100% - 37px)',

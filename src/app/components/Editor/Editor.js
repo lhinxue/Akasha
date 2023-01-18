@@ -182,15 +182,16 @@ export default function Editor() {
             '& .ck-editor__main': {
                 backgroundColor: '#eee',
                 overflowY: 'scroll',
-                padding: '30px 30px 50px',
+                // padding: '30px 0 50px',
                 flexGrow: 1,
                 display: 'flex',
-                '& .ck-editor__editable.ck-focused': {
-                    borderColor: 'silver',
-                    boxShadow: 'none'
+                '& .ck-editor__editable': {
+                    border: 'none !important',
+                    boxShadow: '0px 0px 11px 0px rgb(70 70 70 / 10%)',
                 },
                 '& .ck-content': {
-                    margin: '10px auto',
+                    margin: '0px auto',
+                    padding: '30px 50px',
                     maxWidth: '800px',
                     minHeight: '100%',
                     width: '100%',
