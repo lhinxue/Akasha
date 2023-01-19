@@ -1,23 +1,26 @@
-import { Alert } from "@mui/material";
-import { Component, createContext, useEffect, useState } from "react";
+import { Component, createContext } from "react";
 import { v4 } from "uuid";
-const LeyLine = createContext()
 
+export const LeyLine = createContext()
 
+export default class LeyLines extends Component {
 
-class LeyLines extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            Irminsul: {
-                name: 'Irminsul',
+            api: { file: '', key: '', node: '' },
+            color: { primary: '#43a047', secondary: '#81c784' },
+            history: [],
+            irminsul: {
+                name: 'irminsul',
+                config: {},
                 _: {
                     'a4522850-ac16-4ccc-a0bf-bb48a471f622': {
-                        name: 'Parent Node',
+                        name: 'Parent node',
                         content: '<p>The "Folder" can also be an document.</p>',
                         _: {
                             '9f2022aa-93d2-11ed-a1eb-0242ac120002': {
-                                name: 'Child Node',
+                                name: 'Child node',
                                 content: '<p>The "File" can turn into a folder.</p>',
                                 _: {}
                             }
@@ -30,47 +33,64 @@ class LeyLines extends Component {
                     }
                 }
             },
-            Alert: {
-                on: false,
-                type: 0,
-                message: ''
-            },
-            Api: {
-                Node: '',
-                Alert: {}
-            },
-            history: [],
-            Color: { primary: '#7b1fa2', secondary: '#ba68c8' },
+            msg: { on: false, type: 0, message: '' },
             reRender: false,
-
+            terminal: false,
         }
-        this.updateApi = this.updateApi.bind(this)
-        this.alertOn = this.alertOn.bind(this)
-        this.alertOff = this.alertOff.bind(this)
-        this.getNodePath = this.getNodePath.bind(this)
-        this.getNode = this.getNode.bind(this)
-        this.setNode = this.setNode.bind(this)
+        this._apiFile = this._apiFile.bind(this)
+        this._apiKey = this._apiKey.bind(this)
+        this._apiNode = this._apiNode.bind(this)
+        this._irminsul = this._irminsul.bind(this)
         this.addNode = this.addNode.bind(this)
-        this.deleteNode = this.deleteNode.bind(this)
-        this.moveNode = this.moveNode.bind(this)
-
-        this.updateHistory = this.updateHistory.bind(this)
         this.clearRecordFromHistory = this.clearRecordFromHistory.bind(this)
-
+        this.deleteNode = this.deleteNode.bind(this)
+        this.getNode = this.getNode.bind(this)
+        this.getNodePath = this.getNodePath.bind(this)
+        this.moveNode = this.moveNode.bind(this)
+        this.msgOff = this.msgOff.bind(this)
+        this.msgOn = this.msgOn.bind(this)
+        this.setNode = this.setNode.bind(this)
+        this.terminalOff = this.terminalOff.bind(this)
+        this.terminalOn = this.terminalOn.bind(this)
+        this.updateApi = this.updateApi.bind(this)
+        this.updateHistory = this.updateHistory.bind(this)
     }
+
+    _irminsul(ims) {
+        this.setState({ irminsul: ims })
+    }
+
+    _apiKey(key) {
+        this.updateApi('key', key)
+    }
+
+    _apiFile(file) {
+        this.updateApi('file', file)
+    }
+
+    _apiNode(node) {
+        this.updateApi('node', node)
+    }
+
+    terminalOn() {
+        this.setState({ terminal: true })
+    }
+    terminalOff() {
+        this.setState({ terminal: false })
+    }
+
     updateApi(strKey, objValue) {
         this.setState({
-            Api: {
-                ...this.state.Api,
+            api: {
+                ...this.state.api,
                 [strKey]: objValue
             }
         })
     }
 
-    alertOn(intType, strMessage, autoDestroy) {
-
+    msgOn(intType, strMessage, autoDestroy) {
         this.setState({
-            Alert: {
+            msg: {
                 on: true,
                 type: intType,
                 message: strMessage
@@ -79,7 +99,7 @@ class LeyLines extends Component {
         if (autoDestroy) {
             setTimeout(() => {
                 this.setState({
-                    Alert: {
+                    msg: {
                         on: false,
                         type: intType,
                         message: strMessage
@@ -89,10 +109,10 @@ class LeyLines extends Component {
         }
     }
 
-    alertOff() {
+    msgOff() {
         this.setState({
-            Alert: {
-                ...this.state.Alert,
+            msg: {
+                ...this.state.msg,
                 on: false
             }
         })
@@ -110,9 +130,10 @@ class LeyLines extends Component {
         }
         this.setState({ history: newHistory })
     }
+
     getNodePath(key) {
         try {
-            let ims = this.state.Irminsul,
+            let ims = this.state.irminsul,
                 arrPath = []
             for (const i of key.split('=>')) {
                 ims = ims._[i]
@@ -122,13 +143,11 @@ class LeyLines extends Component {
         } catch (error) {
             return []
         }
-
     }
-
 
     getNode(arrKeys, strKey) {
         if (arrKeys.length === 1 && arrKeys[0] === '') return ''
-        let strCommand = 'this.state.Irminsul._'
+        let strCommand = 'this.state.irminsul._'
         for (let i = 0; i < arrKeys.length; i++) {
             strCommand = strCommand + '[`' + arrKeys[i] + '`]._'
         }
@@ -139,43 +158,41 @@ class LeyLines extends Component {
 
     setNode(arrKeys, strKey, strContent, callback = () => 0) {
         if (arrKeys.length === 1 && arrKeys[0] === '') return
-        let ims = this.state.Irminsul
+        let ims = this.state.irminsul
         let strCommand = 'ims._'
         for (let i = 0; i < arrKeys.length; i++) {
             strCommand = strCommand + '[`' + arrKeys[i] + '`]._'
         }
         strCommand = strCommand.slice(0, -1)
-        strCommand = strCommand + strKey + ' = strContent;this.setState({ Irminsul: ims }, callback)'
-
+        strCommand = strCommand + strKey + ' = strContent;this.setState({ irminsul: ims }, callback)'
         eval(strCommand)
     }
+
     addNode(arrKeys, name, callback = () => 0) {
         if (arrKeys.length === 1 && arrKeys[0] === '') return
-        let ims = this.state.Irminsul
+        let ims = this.state.irminsul
         let strCommand = 'ims._'
         for (let i = 0; i < arrKeys.length; i++) {
             strCommand = strCommand + '[`' + arrKeys[i] + '`]._'
         }
-        strCommand = strCommand + '[`' + v4() + '`] = {name: name, content: "", _: {}};this.setState({ Irminsul: ims }, callback)'
-
+        strCommand = strCommand + '[`' + v4() + '`] = {name: name, content: "", _: {}};this.setState({ irminsul: ims }, callback)'
         eval(strCommand)
     }
 
     deleteNode(arrKeys, callback = () => 0) {
         if (arrKeys.length === 1 && arrKeys[0] === '') return
-        let ims = this.state.Irminsul
+        let ims = this.state.irminsul
         let strCommand = 'delete ims._'
         for (let i = 0; i < arrKeys.length; i++) {
             strCommand = strCommand + '[`' + arrKeys[i] + '`]._'
         }
         strCommand = strCommand.slice(0, -2)
-        strCommand = strCommand + ';this.setState({ Irminsul: ims }, callback)'
-
+        strCommand = strCommand + ';this.setState({ irminsul: ims }, callback)'
         eval(strCommand)
     }
 
     moveNode(arrKeysFrom, arrKeysTo, callback = () => 0, onError = () => 0) {
-        let ims = this.state.Irminsul
+        let ims = this.state.irminsul
         let nodeKey = arrKeysFrom[arrKeysFrom.length - 1]
         if (arrKeysTo === '') {
             let strCommand = 'let toBeMoved = ims._'
@@ -186,11 +203,11 @@ class LeyLines extends Component {
             for (let i = 0; i < arrKeysFrom.length; i++) {
                 strCommand = strCommand + '[`' + arrKeysFrom[i] + '`]._'
             }
-            strCommand = strCommand.slice(0, -2) + '; ims._' + '[`' + nodeKey + '`] = toBeMoved;this.setState({ Irminsul: ims }, callback())'
+            strCommand = strCommand.slice(0, -2) + '; ims._' + '[`' + nodeKey + '`] = toBeMoved;this.setState({ irminsul: ims }, callback())'
             eval(strCommand)
         } else {
             if (arrKeysTo.includes(nodeKey)) {
-                onError('You cannot move a Node under its children')
+                onError('You cannot move a node under its children')
                 return
             }
             let strCommand = 'let toBeMoved = ims._'
@@ -205,47 +222,42 @@ class LeyLines extends Component {
             for (let i = 0; i < arrKeysTo.length; i++) {
                 strCommand = strCommand + '[`' + arrKeysTo[i] + '`]._'
             }
-            strCommand = strCommand + '[`' + nodeKey + '`] = toBeMoved;this.setState({ Irminsul: ims }, callback)'
+            strCommand = strCommand + '[`' + nodeKey + '`] = toBeMoved;this.setState({ irminsul: ims }, callback)'
             eval(strCommand)
         }
-
-
-
     }
 
     render() {
         return (
             <LeyLine.Provider value={{
-                Api: this.state.Api,
-                Alert: this.state.Alert,
-                Service: {
-                    Node: {
-                        set: (key) => this.updateApi('Node', key),
-                        getPath: this.getNodePath,
-                    },
-                    getNode: this.getNode,
-                    setNode: this.setNode,
-                    addNode: this.addNode,
-                    deleteNode: this.deleteNode,
-                    moveNode: this.moveNode,
-                    updateHistory: this.updateHistory,
-                    clearRecordFromHistory: this.clearRecordFromHistory,
-                    alertOn: this.alertOn,
-                    alertOff: this.alertOff
-                },
+                api: this.state.api,
+                color: { primary: this.state.color.primary, secondary: this.state.color.secondary },
                 history: this.state.history,
-                Irminsul: this.state.Irminsul,
-                Color: {
-                    primary: this.state.Color.primary,
-                    secondary: this.state.Color.secondary,
+                irminsul: this.state.irminsul,
+                msg: this.state.msg,
+                reRender: this.state.reRender,
+                terminal: this.state.terminal,
+                os: {
+                    _apiFile: this._apiFile,
+                    _apiKey: this._apiKey,
+                    _apiNode: this._apiNode,
+                    _irminsul: this._irminsul,
+                    getNodePath: this.getNodePath,
+                    addNode: this.addNode,
+                    clearRecordFromHistory: this.clearRecordFromHistory,
+                    deleteNode: this.deleteNode,
+                    getNode: this.getNode,
+                    moveNode: this.moveNode,
+                    msgOff: this.msgOff,
+                    msgOn: this.msgOn,
+                    setNode: this.setNode,
+                    updateHistory: this.updateHistory,
+                    terminalOn: this.terminalOn,
+                    terminalOff: this.terminalOff
                 },
-                reRender: this.state.reRender
             }}>
                 {this.props.children}
-            </LeyLine.Provider>
+            </LeyLine.Provider >
         )
     }
 }
-
-export default LeyLines
-export { LeyLine }

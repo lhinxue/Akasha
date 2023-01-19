@@ -13,37 +13,6 @@ function disableEvent(event) {
     event.preventDefault()
 }
 
-function recursivelyGet(obj, arrKeys, strKey) {
-    if (arrKeys.length === 0) {
-        return obj[strKey]
-    } else {
-        let key = arrKeys.shift()
-        return recursivelyGet(obj[key]._, arrKeys, strKey)
-    }
-}
-
-function recursivelySet(obj, arrKeys, strKey, value) {
-    if (arrKeys.length === 1) {
-        return ({
-            ...obj,
-            [arrKeys[0]]: {
-                ...obj[arrKeys[0]],
-                [strKey]: value
-            }
-        })
-    } else {
-        let key = arrKeys.shift()
-        console.log(obj[key])
-        return ({
-            ...obj,
-            [key]: {
-                ...obj[key],
-                _: recursivelySet(obj[key]._, arrKeys, strKey, value)
-            }
-        })
-    }
-}
-
 // attempt
 function attempt(func, obj) {
     try {
@@ -147,6 +116,4 @@ function download(strContent, strFileName, strFileSuffix = 'irminsul') {
 
 export default {
     disableEvent, attempt, cipher, upload, download,
-    recursivelyGet,
-    recursivelySet
 }

@@ -47,18 +47,19 @@ export default function Dialog({
     }
 
     return (
-        <MuiDialog PaperProps={{ sx: sx.Paper }} onClose={onClose}
-
+        <MuiDialog
+            PaperProps={{ sx: sx.Paper }}
+            onClose={onClose}
             fullWidth={fullWidth}
             maxWidth={'lg'}
-            open={on} slotProps={{ backdrop: { style: sx.Backdrop } }} >
-
-            <DialogTitle component={'h2'} color={warning ? 'error' : 'primary'} >
+            open={on}
+            slotProps={{ backdrop: { style: sx.Backdrop } }}
+        >
+            <DialogTitle component={'h2'} color={warning ? 'error' : 'primary'}>
                 {title}
                 {closeButton ? <IconButton icon={<Remix.add />} onClick={onClose} /> : null}
             </DialogTitle>
-
-            <DialogContent >
+            <DialogContent>
                 {children}
             </DialogContent>
             {

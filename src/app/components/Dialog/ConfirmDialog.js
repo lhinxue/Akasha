@@ -23,7 +23,7 @@ export default function ConfirmDialog({
 
     return (
         <Dialog
-        noTitle
+            noTitle
             on={on}
             onClose={onClose}
             onSubmit={onSubmit}

@@ -12,7 +12,7 @@ export default function DisplayDialog({
 
     return (
         <Dialog
-        noAction
+            noAction
             on={on}
             onClose={onClose}
             title={title}
@@ -20,11 +20,11 @@ export default function DisplayDialog({
             closeButton
         >
             <Box sx={{
-                height:'80vh'
+                height: '80vh'
             }}>
-            {children}
+                {children}
             </Box>
-            
+
         </Dialog>
     )
 }

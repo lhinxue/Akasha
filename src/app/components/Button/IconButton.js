@@ -8,7 +8,9 @@ export default function IconButton({
     rotate,
     size = 30,
     tooltip,
-    tooltipPosition = 'top'
+    tooltipPosition = 'top',
+    component,
+    disabled
 }) {
 
     // Styles
@@ -31,12 +33,12 @@ export default function IconButton({
 
     return tooltip ?
         <Tooltip title={tooltip} placement={tooltipPosition} arrow enterDelay={1000}>
-            <Button color={gray ? 'default' : on === true ? 'secondary' : on === false ? 'primary' : 'primary'} onClick={onClick} sx={sx} >
+            <Button disabled={disabled} component={component} color={gray ? 'default' : on === true ? 'secondary' : on === false ? 'primary' : 'primary'} onClick={onClick} sx={sx} >
                 {icon}
             </Button>
         </Tooltip>
         :
-        <Button color={gray ? 'default' : on === true ? 'secondary' : on === false ? 'primary' : 'primary'} onClick={onClick} sx={sx} >
+        <Button disabled={disabled} component={component} color={gray ? 'default' : on === true ? 'secondary' : on === false ? 'primary' : 'primary'} onClick={onClick} sx={sx} >
             {icon}
         </Button>
 }

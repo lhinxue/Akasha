@@ -1,178 +1,154 @@
 import { TreeItem, TreeView } from "@mui/lab";
 import { Box, Typography } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { LeyLine } from "../../core/LeyLine";
-import ContextMenu from "../ContextMenu/ContextMenu";
 import IconButton from "../Button/IconButton";
-import Remix from "../Icon/Remix";
-import Dialog from "../../templates/Dialog";
-import NameDialog from "../Dialog/NameDialog";
+import ContextMenu from "../ContextMenu/ContextMenu";
 import ConfirmDialog from "../Dialog/ConfirmDialog";
+import NameDialog from "../Dialog/NameDialog";
+import Remix from "../Icon/Remix";
 
 export default function Explorer() {
 
-    const { Api, Service, Irminsul } = useContext(LeyLine)
+    // LeyLine
+    const { api, os, irminsul } = useContext(LeyLine)
 
-    const [staMenuOn, setStaMenuOn] = useState(false)
-    const [objEvent, setObjEvent] = useState({})
+    // States
+    const [menuOn, _menuOn] = useState(false)
+    const [cmEvent, _cmEvent] = useState({})
+    const [cmKey, _cmKey] = useState('')
+    const [mouseDownId, _mouseDownId] = useState('')
+    const [nameDialogOn, _nameDialogOn] = useState(false)
+    const [confirmationOn, _confirmationOn] = useState(false)
+    const [submitChannel, _submitChannel] = useState(0)
+    const [dialogData, _dialogData] = useState({})
 
-    const [contextMenuKey, setContextMenuKey] = useState('')
-    const onContextMenu = (event) => {
-        event.stopPropagation()
-        event.preventDefault()
-        setContextMenuKey(event.target.id)
-        setObjEvent(event)
-        setStaMenuOn(true)
+    // Functions
+    const onContextMenu = e => {
+        e.stopPropagation()
+        e.preventDefault()
+        _cmKey(e.target.id)
+        _cmEvent(e)
+        _menuOn(true)
     }
-
-    const [treeMonitor, setTreeMonitor] = useState('')
-
-
-    useEffect(() => {
-        if (treeMonitor.mouseDown !== '' && treeMonitor.mouseUp !== '' && treeMonitor.mouseDown !== treeMonitor.mouseUp) {
-            console.log('drag')
+    const onNodeMouseUp = e => {
+        if (mouseDownId !== '' && mouseDownId !== e.target.id) {
+            moveTreeNode(mouseDownId.split('=>'), e.target.id.split('=>'))
         }
-    }, [treeMonitor])
-
-    const renderTree = (obj, parentKey = '') =>
-        Object.keys(obj).map(
+        _mouseDownId('')
+    }
+    const onRootMouseUp = () => {
+        if (mouseDownId !== '') {
+            moveTreeNode(mouseDownId.split('=>'), '')
+        }
+        _mouseDownId('')
+    }
+    const renderTree = (obj, parentKey = '') => {
+        return Object.keys(obj).map(
             i => {
                 let nodeId = parentKey === '' ? i : parentKey + '=>' + i
                 return (
                     <TreeItem
                         nodeId={nodeId}
                         key={nodeId}
-                        label={<div id={nodeId}
-                            onMouseDown={(e) => setTreeMonitor(e.target.id)}
-                            onMouseUp={(e) => {
-                                if (treeMonitor !== '' && treeMonitor !== e.target.id) {
-                                    moveTreeNode(treeMonitor.split('=>'), e.target.id.split('=>'))
-
-                                }
-                                setTreeMonitor('')
-                            }}
-                            onContextMenu={onContextMenu}>{obj[i].name}</div>}
+                        label={<div id={nodeId} onMouseDown={e => _mouseDownId(e.target.id)} onMouseUp={onNodeMouseUp} onContextMenu={onContextMenu}>{obj[i].name}</div>}
                     >
                         {renderTree(obj[i]._, nodeId)}
                     </TreeItem>
                 )
-
             }
         )
-
-
-    const [nameDialogOn, setNameDialogOn] = useState(false)
-    const [confirmationDialogOn, setConfirmationDialogOn] = useState(false)
-    const [optionDialogOn, setOptionDialogOn] = useState(false)
-    const [dialogSubmitMethod, setDialogSubmitMethod] = useState(0)
-    const [dialogData, setDialogData] = useState({})
+    }
     const onMenuClick = {
         addRootNode: () => {
-            setDialogData({
-                title: 'Add a Node under "' + Irminsul.name + '"',
-            })
-            setDialogSubmitMethod(0)
-            setNameDialogOn(true)
+            _dialogData({ title: 'Add a node under "' + irminsul.name + '"' })
+            _submitChannel(0)
+            _nameDialogOn(true)
         },
         addNode: () => {
-            setDialogData({
-                title: 'Add a Child Node under "' + Service.getNode(contextMenuKey.split('=>'), 'name') + '"',
-            })
-            setDialogSubmitMethod(1)
-            setNameDialogOn(true)
+            _dialogData({ title: 'Add a Child node under "' + os.getNode(cmKey.split('=>'), 'name') + '"' })
+            _submitChannel(1)
+            _nameDialogOn(true)
         },
         rename: () => {
-            setDialogData({
-                title: 'Rename Node "' + Service.getNode(contextMenuKey.split('=>'), 'name') + '"',
-            })
-            setDialogSubmitMethod(3)
-            setNameDialogOn(true)
+            _dialogData({ title: 'Rename node "' + os.getNode(cmKey.split('=>'), 'name') + '"' })
+            _submitChannel(2)
+            _nameDialogOn(true)
         },
         delete: () => {
-            setDialogData({
+            _dialogData({
                 title: 'Dangerous Operation!',
-                name: Service.getNode(contextMenuKey.split('=>'), 'name'),
-                message: 'Are you sure to delete Node "' + Service.getNode(contextMenuKey.split('=>'), 'name') + '" ?',
+                name: os.getNode(cmKey.split('=>'), 'name'),
+                message: 'Are you sure to delete node "' + os.getNode(cmKey.split('=>'), 'name') + '" ?',
             })
-            setDialogSubmitMethod(4)
-            setConfirmationDialogOn(true)
+            _submitChannel(3)
+            _confirmationOn(true)
         }
     }
-
-    const onDialogSubmit = (data) => {
-        switch (dialogSubmitMethod) {
+    const onDialogSubmit = data => {
+        switch (submitChannel) {
             case 0:
-                Service.addNode([], data, () => Service.alertOn(1, '"' + data + '" Created', 3))
-                setNameDialogOn(false)
+                os.addNode([], data, () => os.msgOn(1, '"' + data + '" Created', 3))
+                _nameDialogOn(false)
                 break
             case 1:
-                Service.addNode(contextMenuKey.split('=>'), data, () => Service.alertOn(1, '"' + data + '" Created', 3))
-                setNameDialogOn(false)
+                os.addNode(cmKey.split('=>'), data, () => os.msgOn(1, '"' + data + '" Created', 3))
+                _nameDialogOn(false)
+                break
+            case 2:
+                os.setNode(cmKey.split('=>'), 'name', data, () => os.msgOn(1, 'Renamed to "' + data + '"', 3))
+                _nameDialogOn(false)
                 break
             case 3:
-                Service.setNode(contextMenuKey.split('=>'), 'name', data, () => Service.alertOn(1, 'Renamed to "' + data + '"', 3))
-                setNameDialogOn(false)
-                break
-            case 4:
-                Service.deleteNode(contextMenuKey.split('=>'), () => Service.alertOn(1, 'Node "' + dialogData.name + '" Deleted', 3))
+                os.deleteNode(cmKey.split('=>'), () => os.msgOn(1, 'node "' + dialogData.name + '" Deleted', 3))
                 apiNodeStillValid()
-                setConfirmationDialogOn(false)
+                _confirmationOn(false)
                 break
             default:
                 break
         }
     }
     const moveTreeNode = (from, to) => {
-        Service.moveNode(from, to,
-            () => { apiNodeStillValid(); Service.alertOn(1, 'Node Moved', 3) },
-            (msg) => Service.alertOn(3, msg, 3))
+        os.moveNode(from, to,
+            () => { apiNodeStillValid(); os.msgOn(1, 'node Moved', 3) },
+            (msg) => os.msgOn(3, msg, 3))
     }
-
     const apiNodeStillValid = () => {
         try {
-            Service.getNode(Api.Node.split('=>'), 'name')
+            os.getNode(api.node.split('=>'), 'name')
         } catch (error) {
-            Service.clearRecordFromHistory(Api.Node)
-            Service.Node.set('')
+            os.clearRecordFromHistory(api.node)
+            os._apiNode('')
         }
     }
 
     return (
         <>
-            <Box id={'Irminsul'} className='ExplorerHeader' onMouseUp={(e) => {
-                if (treeMonitor !== '') {
-                    moveTreeNode(treeMonitor.split('=>'), '')
-                }
-                setTreeMonitor('')
-            }}>
-                <Typography component={'h1'}>{Irminsul.name}</Typography>
-                <IconButton icon={<Remix.add />} onClick={onMenuClick.addRootNode} tooltip={'Add a Root Node'} tooltipPosition={'bottom'} />
+            <Box id={'irminsul'} className='ExplorerHeader' onMouseUp={onRootMouseUp}>
+                <Typography component={'h1'}>{irminsul.name}</Typography>
+                <IconButton icon={<Remix.add />} onClick={onMenuClick.addRootNode} tooltip={'Add a Root node'} tooltipPosition={'bottom'} />
             </Box>
             <TreeView
                 className="Explorer"
                 aria-label="Explorer"
-                onNodeSelect={(e, i) => Service.Node.set(i)}
+                onNodeSelect={(e, i) => os._apiNode(i)}
                 defaultCollapseIcon={<Remix.arrowLineDown />}
                 defaultExpandIcon={<Remix.arrowLineRight />}
-                onDragStart={(e) => console.log(e.target.id)}
-                onDragEnd={(e) => console.log(e.target.id)}
             >
-                {renderTree(Irminsul._)}
+                {renderTree(irminsul._)}
             </TreeView>
             <ContextMenu
-                on={staMenuOn}
-                onClose={() => setStaMenuOn(false)}
-                event={objEvent}
+                on={menuOn}
+                onClose={() => _menuOn(false)}
+                event={cmEvent}
                 menus={[
-                    { name: 'Add a Child Node', onClick: onMenuClick.addNode },
+                    { name: 'Add a Child node', onClick: onMenuClick.addNode },
                     { name: 'Rename', onClick: onMenuClick.rename },
                     { name: 'Delete', onClick: onMenuClick.delete },
                 ]}
             />
-            <NameDialog on={nameDialogOn} onClose={() => setNameDialogOn(false)} onSubmit={onDialogSubmit} title={dialogData.title} />
-
-            <ConfirmDialog on={confirmationDialogOn} onClose={() => setConfirmationDialogOn(false)} title={dialogData.title} message={dialogData.message} onSubmit={onDialogSubmit} />
-
+            <NameDialog on={nameDialogOn} onClose={() => _nameDialogOn(false)} onSubmit={onDialogSubmit} title={dialogData.title} />
+            <ConfirmDialog on={confirmationOn} onClose={() => _confirmationOn(false)} title={dialogData.title} message={dialogData.message} onSubmit={onDialogSubmit} />
         </>
     )
 }

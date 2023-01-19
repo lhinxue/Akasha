@@ -1,13 +1,11 @@
-import Ckeditor from "ckeditor5-custom-build/build/ckeditor";
-import { CKEditor } from '@ckeditor/ckeditor5-react'
-import { useContext, useEffect, useState } from "react";
+import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { Box, Breadcrumbs, Typography } from "@mui/material";
+import Ckeditor from "ckeditor5-custom-build/build/ckeditor";
+import { useContext, useEffect, useState } from "react";
 import { LeyLine } from "../../core/LeyLine";
+import Downloader from "../Button/Downloader";
 import IconButton from "../Button/IconButton";
 import Remix from "../Icon/Remix";
-import sys from "../../core/sys";
-import Downloader from "../Button/Downloader";
-
 
 const EDITOR_CONFIG = {
     toolbar: {
@@ -74,177 +72,155 @@ const EDITOR_CONFIG = {
 
 export default function Editor() {
 
-    const { Service, Api, Color, Irminsul, savingStatus, history } = useContext(LeyLine)
+    // LeyLine
+    const {
+        api,
+        os,
+        history
+    } = useContext(LeyLine)
 
-    const [strDocument, setStrDocument] = useState('')
-    const [readOnly, setReadOnly] = useState(true)
-    const [lock, setLock] = useState(true)
+    // States
+    const [document, _document] = useState('')
+    const [readOnly, _readOnly] = useState(true)
+    const [lock, _lock] = useState(true)
+    const [editor, _editor] = useState(undefined)
+    const [escape, _escape] = useState(true)
 
-    const lockDocument = (editor) => {
-        setLock(true)
+    // Functions
+    const lockDocument = editor => {
+        _lock(true)
         editor.enableReadOnlyMode('Kiana')
     }
-    const unlockDocument = () => {
-        setLock(false)
-    }
-
+    const unlockDocument = () => _lock(false)
     const editDocument = () => {
         if (lock) return
         editor.disableReadOnlyMode('Kiana')
-        setReadOnly(false)
+        _readOnly(false)
     }
     const viewDocument = () => {
         if (lock) return
         editor.enableReadOnlyMode('Kiana')
-        setReadOnly(true)
+        _readOnly(true)
     }
-
-
-    const [editor, setEditor] = useState(undefined)
+    const saveDocument = () => {
+        let strDocName = os.getNode(api.node.split('=>'), 'name')
+        os.setNode(api.node.split('=>'), 'content', editor.getData(), () => os.msgOn(1, '"' + strDocName + '" Saved', 3))
+    }
     const onReady = editor => {
-        setEditor(editor)
+        _editor(editor)
         lockDocument(editor)
     }
 
-    const onChange = (event, editor) => {
-
-        // Service.setNode(Api.Node.split('=>'), 'content', editor.getData())
-        // setStrDocument(editor.getData())
-    }
-
-    const [escapeFirst, setEscapeFirst] = useState(true)
-
+    // Effects
     useEffect(() => {
-        if (Api.Node !== '') {
+        if (api.node !== '') {
             unlockDocument()
             if (history.length > 0) {
-                if (escapeFirst) {
-                    setEscapeFirst(false)
-                } else if (strDocument !== editor.getData()) {
-                    let strDocName = Service.getNode(history[history.length - 1].split('=>'), 'name')
-                    Service.alertOn(0, 'Saving "' + strDocName + '"')
-                    Service.setNode(history[history.length - 1].split('=>'), 'content', editor.getData(), () => Service.alertOn(1, '"' + strDocName + '" Saved', 3))
-
+                if (escape) {
+                    _escape(false)
+                } else if (document !== editor.getData()) {
+                    let strDocName = os.getNode(history[history.length - 1].split('=>'), 'name')
+                    os.msgOn(0, 'Saving "' + strDocName + '"')
+                    os.setNode(history[history.length - 1].split('=>'), 'content', editor.getData(), () => os.msgOn(1, '"' + strDocName + '" Saved', 3))
                 }
             }
-            Service.updateHistory(Api.Node)
-            setStrDocument(Service.getNode(Api.Node.split('=>'), 'content'))
+            os.updateHistory(api.node)
+            _document(os.getNode(api.node.split('=>'), 'content'))
         } else {
-            setStrDocument('')
-            try {
-                lockDocument(editor)
-            } catch (error) { }
-
+            _document('')
+            try { lockDocument(editor) } catch (error) { }
         }
+    }, [api.node])
 
-    }, [Api.Node])
-
-
-
-
+    // Styles
     const sx = {
         flexGrow: 1,
         width: '1px',
         '& .Header': {
-            display: 'flex',
-            width: '100%',
-            height: '70px',
-            borderBottom: '1px solid silver',
             alignItems: 'center',
+            borderBottom: '1px solid silver',
+            display: 'flex',
             flexDirection: 'row',
+            height: '70px',
             justifyContent: 'space-between',
+            width: '100%',
             '&>div': {
                 margin: '0 5px'
             },
             '& .Editor_Breadcrumbs': {
-                flexGrow: 1,
                 display: 'flex',
+                flexGrow: 1,
+                fontStyle: 'italic',
                 justifyContent: 'center',
-                fontStyle: 'italic'
             }
         },
         '& .ck-editor': {
-            height: 'calc(100% - 71px)',
             display: 'flex',
             flexDirection: 'column',
+            height: 'calc(100% - 71px)',
             '& .ck-editor__top': {
-                width: '100%',
                 margin: '0 auto',
+                width: '100%',
                 '& .ck-toolbar__items': {
                     justifyContent: 'center'
                 },
                 '& .ck-toolbar': {
                     border: 'none',
                     borderBottom: '1px solid silver',
-
                 }
             },
             '& .ck-editor__main': {
                 backgroundColor: '#eee',
-                overflowY: 'scroll',
-                // padding: '30px 0 50px',
-                flexGrow: 1,
                 display: 'flex',
+                flexGrow: 1,
+                overflowY: 'scroll',
                 '& .ck-editor__editable': {
                     border: 'none !important',
                     boxShadow: '0px 0px 11px 0px rgb(70 70 70 / 10%)',
                 },
                 '& .ck-content': {
+                    flexGrow: 1,
+                    height: 'max-content',
                     margin: '0px auto',
-                    padding: '30px 50px',
                     maxWidth: '800px',
                     minHeight: '100%',
+                    padding: '30px 50px',
                     width: '100%',
-                    height: 'max-content',
-                    flexGrow: 1,
                 }
             }
         }
     }
 
     return (
-        <>
-            <Box className={'Editor'} sx={sx}>
-                <Box className={'Header'}>
-
-                    <Box>
-                        <IconButton icon={<Remix.save />} onClick={() => {
-                            let strDocName = Service.getNode(Api.Node.split('=>'), 'name')
-                            Service.setNode(Api.Node.split('=>'), 'content', editor.getData(), () => Service.alertOn(1, '"' + strDocName + '" Saved', 3))
-                        }} tooltip={'Save'} tooltipPosition={'left'} />
-
-                    </Box>
-                    <Breadcrumbs className='Breadcrumbs' separator='·'>
-                        {
-                            Service.Node.getPath(Api.Node).map(
-                                str => <Typography color='inherit'>
-                                    {str}
-                                </Typography>
-                            )
-                        }
-                    </Breadcrumbs>
-                    <Box>
-                        {
-                            readOnly ?
-                                <IconButton icon={<Remix.edit />} onClick={() => {
-                                    editDocument()
-                                }} tooltip={'Start Editing'} tooltipPosition={'bottom'} /> :
-                                <IconButton icon={<Remix.preview />} onClick={() => {
-                                    viewDocument()
-                                }} tooltip={'Preview'} tooltipPosition={'bottom'} />
-                        }
-                    </Box>
+        <Box className={'Editor'} sx={sx}>
+            <Box className={'Header'}>
+                <Box>
+                    <IconButton icon={<Remix.save />} onClick={saveDocument} tooltip={'Save'} tooltipPosition={'left'} />
                 </Box>
-                <CKEditor
-                    editor={Ckeditor}
-                    config={EDITOR_CONFIG}
-                    data={strDocument}
-                    onReady={onReady}
-                    onChange={onChange}
-                />
-                <Downloader />
-
+                <Breadcrumbs className='Breadcrumbs' separator='·'>
+                    {
+                        os.getNodePath(api.node).map(
+                            str => <Typography color='inherit' key={str}>
+                                {str}
+                            </Typography>
+                        )
+                    }
+                </Breadcrumbs>
+                <Box>
+                    {
+                        readOnly ?
+                            <IconButton icon={<Remix.edit />} onClick={editDocument} tooltip={'Start Editing'} tooltipPosition={'bottom'} /> :
+                            <IconButton icon={<Remix.preview />} onClick={viewDocument} tooltip={'Preview'} tooltipPosition={'bottom'} />
+                    }
+                </Box>
             </Box>
-        </>
+            <CKEditor
+                editor={Ckeditor}
+                config={EDITOR_CONFIG}
+                data={document}
+                onReady={onReady}
+            />
+            <Downloader />
+        </Box>
     )
 }

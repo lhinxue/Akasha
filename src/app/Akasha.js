@@ -1,19 +1,14 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import './Akasha.css';
-import Alert from "./components/Alert/Alert";
+import Msg from "./components/Msg/Msg";
 import LeyLines from "./core/LeyLine";
 import App from "./pages/App";
-import Terminal from "./pages/Terminal";
 
-function Akasha() {
+export default function Akasha() {
+
     return (
         <LeyLines>
-            <App />
-            <Terminal />
-            <Alert />
+            <App/>
+            <Msg/>
         </LeyLines>
     )
 }
-
-export default Akasha
-

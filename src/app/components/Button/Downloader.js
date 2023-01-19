@@ -9,7 +9,7 @@ import AbsButton from "./AbsButton"
 export default function Downloader() {
 
     // LeyLine
-    const { Api, Irminsul, Service } = useContext(LeyLine)
+    const { api, irminsul, os } = useContext(LeyLine)
 
     const [downloading, setDownloading] = useState(false)
 
@@ -22,12 +22,12 @@ export default function Downloader() {
                 icon={<Remix.download color='primary' />}
                 tooltip='Download File'
                 onClick={() => {
-                    Service.alertOn(0, 'Encrypting...')
+                    os.msgOn(0, 'Encrypting...')
                     setDownloading(true)
                     setTimeout(() => {
-                        sys.cipher(Irminsul, '', (dt) => {
+                        sys.cipher(irminsul, '', (dt) => {
                             sys.download(dt.data, 'test')
-                            Service.alertOn(1, 'Downloaded', 3)
+                            os.msgOn(1, 'Downloaded', 3)
                             setDownloading(false)
                         })
                     }, 1000);
