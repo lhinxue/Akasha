@@ -1,13 +1,13 @@
-import { Button, Dialog as MuiDialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
-import IconButton from "../components/Button/IconButton";
-import Remix from "../components/Icon/Remix";
+import { Button, Dialog as MuiDialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import IconButton from '../components/Button/IconButton';
+import Remix from '../components/Icon/Remix';
 
 export default function Dialog({
-    closeButton,
-    children,
-    noAction,
     allowSubmit,
+    children,
+    closeButton,
     fullWidth,
+    noAction,
     on = false,
     onClose = () => void 0,
     onSubmit = () => void 0,
@@ -15,21 +15,22 @@ export default function Dialog({
     warning
 }) {
 
+    // Styles
     const sx = {
         Paper: {
-            boxShadow: '0px 0px 11px 0px rgb(70 70 70 / 10%)',
             borderRadius: '0',
+            boxShadow: '0px 0px 11px 0px rgb(70 70 70 / 10%)',
             '&>h2': {
-                padding: '10px 20px 5px',
-                fontWeight: 'normal',
-                fontVariant: 'small-caps',
-                letterSpacing: '.1rem',
-                textDecoration: 'none',
-                marginBottom: '10px',
+                alignItems: 'center',
                 display: 'flex',
                 flexDirection: 'row',
-                alignItems: 'center',
+                fontVariant: 'small-caps',
+                fontWeight: 'normal',
                 justifyContent: 'space-between',
+                letterSpacing: '.1rem',
+                marginBottom: '10px',
+                padding: '10px 20px 5px',
+                textDecoration: 'none',
                 '& button': {
                     marginRight: '-10px'
                 }
@@ -57,7 +58,7 @@ export default function Dialog({
         >
             <DialogTitle component={'h2'} color={warning ? 'error' : 'primary'}>
                 {title}
-                {closeButton ? <IconButton icon={<Remix.add />} onClick={onClose} /> : null}
+                {closeButton ? <IconButton icon={<Remix.close />} onClick={onClose} /> : null}
             </DialogTitle>
             <DialogContent>
                 {children}

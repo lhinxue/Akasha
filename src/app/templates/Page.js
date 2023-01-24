@@ -6,8 +6,8 @@ export default function Page({
     children,
     defaultColor = false,
     sx = {},
-    z = 10,
     visibleAfter = 0,
+    z = 10
 }) {
 
     // LeyLine
@@ -39,13 +39,14 @@ export default function Page({
     return (
         <ThemeProvider theme={theme}>
             <Box className='Page' sx={{
-                opacity: pageVisible ? 1 : 0,
-                position: 'absolute',
-                overflow: 'hidden',
-                width: '100vw',
-                height: '100vh',
                 display: 'flex',
-                zIndex: z, ...sx
+                height: '100vh',
+                opacity: pageVisible ? 1 : 0,
+                overflow: 'hidden',
+                position: 'absolute',
+                width: '100vw',
+                zIndex: z,
+                ...sx
             }}>
                 {children}
             </Box>

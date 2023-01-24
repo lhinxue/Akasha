@@ -1,5 +1,7 @@
+import { color } from "@mui/system";
 import { Component, createContext } from "react";
 import { v4 } from "uuid";
+import sys from "./sys";
 
 export const LeyLine = createContext()
 
@@ -54,6 +56,18 @@ export default class LeyLines extends Component {
         this.terminalOn = this.terminalOn.bind(this)
         this.updateApi = this.updateApi.bind(this)
         this.updateHistory = this.updateHistory.bind(this)
+        this._color = this._color.bind(this)
+        this._irminsulName = this._irminsulName.bind(this)
+    }
+
+    _irminsulName(name) {
+        let ims = this.state.irminsul
+        ims.name = name
+        this._irminsul(ims)
+    }
+    _color(hue) {
+        this.setState({ color: { primary: sys.hslToHex(hue, 41, 45), secondary: sys.hslToHex(hue, 38, 64) } })
+
     }
 
     _irminsul(ims) {
@@ -238,6 +252,8 @@ export default class LeyLines extends Component {
                 reRender: this.state.reRender,
                 terminal: this.state.terminal,
                 os: {
+                    _irminsulName: this._irminsulName,
+                    _color: this._color,
                     _apiFile: this._apiFile,
                     _apiKey: this._apiKey,
                     _apiNode: this._apiNode,

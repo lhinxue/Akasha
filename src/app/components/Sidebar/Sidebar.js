@@ -4,8 +4,11 @@ import { LeyLine } from "../../core/LeyLine";
 import sys from "../../core/sys";
 import IconButton from "../Button/IconButton";
 import DisplayDialog from "../Dialog/DisplayDialog";
-import Explorer from "../Explorer/Explorer";
+import Explorer from "../Panel/Explorer";
 import Remix from "../Icon/Remix";
+import Search from "../Panel/Search";
+import Setting from "../Panel/Setting";
+import Credential from "../Panel/Credential";
 
 export default function Sidebar() {
 
@@ -67,16 +70,16 @@ export default function Sidebar() {
         '& .Scroller': {
             display: 'flex',
             height: '100%',
-            maxWidth: 'calc(300vw - 111px)',
+            maxWidth: 'calc(400vw - 148px)',
             overflow: 'hidden',
-            transform: currentTab === 0 ? 'translate(0px)' : currentTab === 1 ? 'translate(-33.33%)' : currentTab === 2 ? 'translate(-66.66%)' : 'translate(0px)',
+            transform: currentTab === 0 ? 'translate(0px)' : currentTab === 1 ? 'translate(-25%)' : currentTab === 2 ? 'translate(-50%)' : currentTab === 3 ? 'translate(-75%)' : 'translate(0px)',
             transition: 'all .3s ease',
-            width: '900px',
+            width: '1200px',
             '& .Panel': {
                 height: 'calc(100% - 37px)',
                 overflowX: 'hidden',
                 width: '300px',
-                '&:first-of-type': {
+                '&.Explorer': {
                     '& .ExplorerHeader': {
                         alignItems: 'center',
                         borderBottom: '1px solid silver',
@@ -91,11 +94,64 @@ export default function Sidebar() {
                         marginBottom: '5px',
                         padding: '0 10px',
                     },
-                    '& .Explorer': {
+                    '& .ExplorerContent': {
                         paddingLeft: '2px',
                     }
                 },
-                '&:nth-of-type(2)': {
+                '&.Search': {
+                    '&>div': {
+                        width: '-webkit-fill-available',
+                        '&:first-of-type': {
+                            height: '35px',
+                            padding: '5px',
+                            borderBottom: '1px solid silver'
+                        },
+                        '&:nth-of-type(2)': {
+                            width: 'calc(100% - 2px)',
+                            height: 'calc(100% - 35px)',
+                            '&>.MuiTabs-scroller': {
+                                overflowY: 'auto !important'
+                            },
+                            '& button': {
+                                fontWeight: 'normal',
+                                alignItems: 'flex-start',
+                                textTransform: 'none',
+                                borderBottom: '1px solid silver',
+                                height: '30px',
+                                minHeight: '30px'
+                            }
+                        }
+                    },
+                    '& input': {
+
+                        paddingLeft: '5px',
+                    }
+                },
+                '&.Credential': {
+                    '&>div': {
+                        margin: '15px',
+                        width: 'calc(100% - 30px)',
+                        '&>div': {
+                            marginBottom: '25px',
+                            '&>label': {
+                                fontVariant: 'small-caps',
+                                marginBottom: '10px',
+                            }
+                        }
+                    }
+                },
+                '&.Setting': {
+                    '&>div': {
+                        margin: '15px',
+                        width: 'calc(100% - 30px)',
+                        '&>div': {
+                            marginBottom: '25px',
+                            '&>label': {
+                                fontVariant: 'small-caps',
+                                marginBottom: '10px',
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -117,17 +173,21 @@ export default function Sidebar() {
                     <Box className={'Tabs'} >
                         <IconButton icon={<Remix.folder />} on={currentTab === 0} onClick={() => _currentTab(0)} tooltip={'Content'} tooltipPosition={'bottom'} />
                         <IconButton icon={<Remix.search />} on={currentTab === 1} onClick={() => _currentTab(1)} tooltip={'Search'} tooltipPosition={'bottom'} />
-                        <IconButton icon={<Remix.setting />} on={currentTab === 2} onClick={() => _currentTab(2)} tooltip={'Setting'} tooltipPosition={'bottom'} />
+                        <IconButton icon={<Remix.key />} on={currentTab === 2} onClick={() => _currentTab(2)} tooltip={'Credential'} tooltipPosition={'bottom'} />
+                        <IconButton icon={<Remix.setting />} on={currentTab === 3} onClick={() => _currentTab(3)} tooltip={'Setting'} tooltipPosition={'bottom'} />
                     </Box>
                     <Box className={'Scroller'}>
                         <Box className={'Panel Explorer'}>
                             <Explorer />
                         </Box>
                         <Box className={'Panel Search'}>
-                            Search
+                            <Search />
+                        </Box>
+                        <Box className={'Panel Credential'}>
+                            <Credential />
                         </Box>
                         <Box className={'Panel Setting'}>
-                            Setting
+                            <Setting />
                         </Box>
                     </Box>
                 </Box>

@@ -1,4 +1,5 @@
 import { Backdrop, CircularProgress } from "@mui/material"
+import moment from "moment/moment"
 import { useContext, useState } from "react"
 import { LeyLine } from "../../core/LeyLine"
 import sys from "../../core/sys"
@@ -13,6 +14,10 @@ export default function Downloader() {
 
     const [downloading, setDownloading] = useState(false)
 
+    const formatFilename = () => {
+        return `${irminsul.name} --v${moment().format('YYYYMMDDHmmss')}`
+    }
+
     return (
         <>
             <AbsButton
@@ -25,13 +30,12 @@ export default function Downloader() {
                     os.msgOn(0, 'Encrypting...')
                     setDownloading(true)
                     setTimeout(() => {
-                        sys.cipher(irminsul, '', (dt) => {
-                            sys.download(dt.data, 'test')
+                        sys.cipher(irminsul, api.key, (dt) => {
+                            sys.download(dt.data, formatFilename())
                             os.msgOn(1, 'Downloaded', 3)
                             setDownloading(false)
                         })
                     }, 1000);
-
                 }}
             />
             <Backdrop open={downloading}>

@@ -129,7 +129,7 @@ export default function Explorer() {
                 <IconButton icon={<Remix.add />} onClick={onMenuClick.addRootNode} tooltip={'Add a Root node'} tooltipPosition={'bottom'} />
             </Box>
             <TreeView
-                className="Explorer"
+                className="ExplorerContent"
                 aria-label="Explorer"
                 onNodeSelect={(e, i) => os._apiNode(i)}
                 defaultCollapseIcon={<Remix.arrowLineDown />}

@@ -84,7 +84,6 @@ export default function Editor() {
     const [readOnly, _readOnly] = useState(true)
     const [lock, _lock] = useState(true)
     const [editor, _editor] = useState(undefined)
-    const [escape, _escape] = useState(true)
 
     // Functions
     const lockDocument = editor => {
@@ -116,9 +115,7 @@ export default function Editor() {
         if (api.node !== '') {
             unlockDocument()
             if (history.length > 0) {
-                if (escape) {
-                    _escape(false)
-                } else if (document !== editor.getData()) {
+                if (document !== editor.getData()) {
                     let strDocName = os.getNode(history[history.length - 1].split('=>'), 'name')
                     os.msgOn(0, 'Saving "' + strDocName + '"')
                     os.setNode(history[history.length - 1].split('=>'), 'content', editor.getData(), () => os.msgOn(1, '"' + strDocName + '" Saved', 3))
@@ -174,7 +171,7 @@ export default function Editor() {
                 display: 'flex',
                 flexGrow: 1,
                 overflowY: 'scroll',
-                '& .ck-editor__editable': {
+                '&>.ck-content.ck-editor__editable': {
                     border: 'none !important',
                     boxShadow: '0px 0px 11px 0px rgb(70 70 70 / 10%)',
                 },

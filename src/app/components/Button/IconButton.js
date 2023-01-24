@@ -1,6 +1,7 @@
 import { IconButton as Button, Tooltip } from "@mui/material";
 
 export default function IconButton({
+    className = '',
     gray,
     icon,
     on,
@@ -33,12 +34,12 @@ export default function IconButton({
 
     return tooltip ?
         <Tooltip title={tooltip} placement={tooltipPosition} arrow enterDelay={1000}>
-            <Button disabled={disabled} component={component} color={gray ? 'default' : on === true ? 'secondary' : on === false ? 'primary' : 'primary'} onClick={onClick} sx={sx} >
+            <Button className={className} disabled={disabled} component={component} color={gray ? 'default' : on === true ? 'secondary' : on === false ? 'primary' : 'primary'} onClick={onClick} sx={sx} >
                 {icon}
             </Button>
         </Tooltip>
         :
-        <Button disabled={disabled} component={component} color={gray ? 'default' : on === true ? 'secondary' : on === false ? 'primary' : 'primary'} onClick={onClick} sx={sx} >
+        <Button className={className} disabled={disabled} component={component} color={gray ? 'default' : on === true ? 'secondary' : on === false ? 'primary' : 'primary'} onClick={onClick} sx={sx} >
             {icon}
         </Button>
 }

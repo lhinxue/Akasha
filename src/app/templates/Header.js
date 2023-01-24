@@ -1,15 +1,16 @@
-import { Box, Typography } from "@mui/material"
-import IconControl from "../Control/IconControl"
+import { Box, Typography } from '@mui/material'
+import IconControl from '../Control/IconControl'
 
 export default function Header({
+    children,
     fontStyle = {},
     height = 40,
     icons = [],
-    z = 10,
     onContextMenu = e => e.preventDefault(),
-    children
+    z = 10,
 }) {
 
+    // Styles
     const sx = {
         alignItems: 'center',
         backgroundColor: 'white',
@@ -17,8 +18,8 @@ export default function Header({
         display: 'flex',
         height: height,
         padding: '0 5px 0 20px',
-        zIndex: z,
         position: 'relative',
+        zIndex: z,
         '& h1': {
             alignItems: 'center',
             display: 'flex',

@@ -1,11 +1,11 @@
-import { Box, Button, Input, InputAdornment, Step, StepContent, StepLabel, Stepper, Typography } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
-import IconButton from "../components/Button/IconButton";
-import Letter from "../components/Icon/Letter";
-import Remix from "../components/Icon/Remix";
-import { LeyLine } from "../core/LeyLine";
-import sys from "../core/sys";
-import Page from "../templates/Page";
+import { Box, Button, Input, InputAdornment, Step, StepContent, StepLabel, Stepper, Typography } from '@mui/material';
+import { useContext, useEffect, useState } from 'react';
+import IconButton from '../components/Button/IconButton';
+import Letter from '../components/Icon/Letter';
+import Remix from '../components/Icon/Remix';
+import { LeyLine } from '../core/LeyLine';
+import sys from '../core/sys';
+import Page from '../templates/Page';
 
 export default function Terminal() {
 
@@ -17,7 +17,7 @@ export default function Terminal() {
     // States
     const [activeStep, _activeStep] = useState(0)
     const [entryAnimation, _entryAnimation] = useState(true)
-    const [exitAnimation, _exitAnimation] = useState(false)
+    const [exitAnimation, _exitAnimation] = useState(true)
     const [fileContent, _fileContent] = useState('')
     const [filename, _filename] = useState('')
     const [password, _password] = useState('')
@@ -26,13 +26,12 @@ export default function Terminal() {
     // Functions
     const turnOffTerminal = () => {
         setTimeout(() => {
-            _exitAnimation(true)
-            setTimeout(() => os.terminalOff(), 1600)
+            _exitAnimation(false)
+            setTimeout(() => os.terminalOff(), 1200)
         }, 2500)
     }
     const stepAhead = () => _activeStep(stp => stp + 1)
-    const unlockirminsul = () => {
-        // setStaPageLock(true)
+    const unlockIrminsul = () => {
         if (filename === '') {
             os.msgOn(3, 'Data source cannot be empty.', 3)
         } else if (password === '') {
@@ -50,21 +49,25 @@ export default function Terminal() {
             })
         }
     }
+    const escapeUnlock = () => {
+        _exitAnimation(false)
+        setTimeout(() => os.terminalOff(), 1200)
+    }
     const onFileSelect = e => {
         sys.upload(e.target.files[0], (e) => _fileContent(e))
-        _filename(e.target.files[0].name.replace('.irminsul', ''))
+        _filename(e.target.files[0].name.split(' --v')[0])
     }
 
     // Styles
     const sx = {
-        backgroundColor: entryAnimation ? '#fdfdfd00' : '#fdfdfdff',
-        height: '100%',
-        opacity: exitAnimation ? 0 : 1,
-        transition: 'all 1s ease 1.5s',
-        width: '100%',
         alignItems: 'center',
+        backgroundColor: entryAnimation ? '#fdfdfd00' : '#fdfdfdff',
         display: 'flex',
+        height: '100%',
         justifyContent: 'center',
+        opacity: exitAnimation ? 1 : 0,
+        transition: 'background-color 1s ease 1.5s, opacity 1s ease',
+        width: '100%',
         '& .Logo': {
             alignItems: 'center',
             display: 'flex',
@@ -141,16 +144,18 @@ export default function Terminal() {
                     flexDirection: 'row',
                     height: '30px',
                     justifyContent: 'space-between',
-                    paddingRight: '7px'
+                    paddingRight: '7px',
+                    userSelect: 'none'
                 }
             }
         },
         '& .Escape': {
-            opacity: entryAnimation ? 0 : 1,
-            transition: 'opacity 2s ease 3.5s, border .3s ease',
+            top: '15px',
+            right: '15px',
             margin: 'auto',
+            opacity: entryAnimation ? 0 : 1,
             position: 'absolute',
-            bottom: '15%',
+            transition: 'opacity 2s ease 3.5s, border .3s ease',
         }
     }
 
@@ -162,15 +167,15 @@ export default function Terminal() {
     return (
         <Page defaultColor>
             <Box sx={sx}>
-                <Box className="Logo">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 -29 40 60">
-                        <path d="M 0 -2 L -7 -10 L 0 -29 L 7 -10 Z" />
-                        <path d="M 0 2 L -7 10 L 0 31 L 7 10 Z" />
-                        <path d="M -1 0 L -9 -8 L -20 0 L -9 8 Z" />
-                        <path d="M 1 0 L 9 -8 L 20 0 L 9 8 Z" />
+                <Box className='Logo'>
+                    <svg xmlns='http://www.w3.org/2000/svg' viewBox='-20 -29 40 60'>
+                        <path d='M 0 -2 L -7 -10 L 0 -29 L 7 -10 Z' />
+                        <path d='M 0 2 L -7 10 L 0 31 L 7 10 Z' />
+                        <path d='M -1 0 L -9 -8 L -20 0 L -9 8 Z' />
+                        <path d='M 1 0 L 9 -8 L 20 0 L 9 8 Z' />
                     </svg>
                 </Box>
-                <Box className="Name">
+                <Box className='Name'>
                     <div>
                         <Letter.A />
                         <Letter.K />
@@ -180,13 +185,13 @@ export default function Terminal() {
                         <Letter.A />
                     </div>
                 </Box>
-                <Box className="Form">
-                    <Stepper className="Stepper" activeStep={activeStep} orientation="vertical">
+                <Box className='Form'>
+                    <Stepper className='Stepper' activeStep={activeStep} orientation='vertical'>
                         <Step key={0}>
                             <StepLabel onClick={() => _activeStep(0)}>
                                 {filename === '' ? 'Select File to Upload' : filename}
                             </StepLabel>
-                            <StepContent className="StepperContent" >
+                            <StepContent className='StepperContent' >
                                 <Input
                                     disabled
                                     value={filename}
@@ -217,15 +222,15 @@ export default function Terminal() {
                                                 icon={showPassword ? <Remix.eye fontSize='small' /> : <Remix.eyeOff fontSize='small' />}
                                                 onClick={() => _showPassword(pre => !pre)}
                                             />
-                                            <IconButton icon={<Remix.arrowRightCircle fontSize='small' />} onClick={unlockirminsul} />
+                                            <IconButton icon={<Remix.arrowRightCircle fontSize='small' />} onClick={unlockIrminsul} />
                                         </InputAdornment>
                                     }
                                 />
                             </StepContent>
                         </Step>
                     </Stepper>
+                    <IconButton className='Escape' icon={<Remix.close />} onClick={escapeUnlock} />
                 </Box>
-                <Button className="Escape" color={'primary'} >Create New Irminsul</Button>
             </Box>
         </Page>
     )
