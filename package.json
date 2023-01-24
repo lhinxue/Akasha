@@ -1,52 +1,82 @@
 {
-  "name": "akasha",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@ckeditor/ckeditor5-react": "^5.0.6",
-    "@emotion/react": "^11.10.5",
-    "@emotion/styled": "^11.10.5",
-    "@mui/lab": "^5.0.0-alpha.115",
-    "@mui/material": "^5.11.4",
-    "@mui/styled-engine": "^5.11.0",
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^13.0.0",
-    "@testing-library/user-event": "^13.2.1",
-    "ckeditor5-custom-build": "file:./src/app/components/Editor/CKEditor5",
-    "file-saver": "^2.0.5",
-    "html-to-text": "^9.0.3",
-    "moment": "^2.29.4",
-    "react": "^18.2.0",
-    "react-color": "^2.19.3",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.4.4",
-    "react-scripts": "5.0.1",
-    "react-scrollbars-custom": "^4.1.1",
-    "smoothscroll-polyfill": "^0.4.4",
-    "uuid": "^9.0.0"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+    "name": "akasha",
+    "version": "0.1",
+    "private": true,
+    "main": "public/electron.js",
+    "homepage": "./",
+    "dependencies": {
+        "@ckeditor/ckeditor5-react": "^5.0.6",
+        "@emotion/react": "^11.10.5",
+        "@emotion/styled": "^11.10.5",
+        "@mui/lab": "^5.0.0-alpha.115",
+        "@mui/material": "^5.11.4",
+        "@mui/styled-engine": "^5.11.0",
+        "@testing-library/jest-dom": "^5.14.1",
+        "@testing-library/react": "^13.0.0",
+        "@testing-library/user-event": "^13.2.1",
+        "ckeditor5-custom-build": "file:./src/app/components/Editor/CKEditor5",
+        "electron-is-dev": "^2.0.0",
+        "file-saver": "^2.0.5",
+        "html-to-text": "^9.0.3",
+        "moment": "^2.29.4",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-router-dom": "^6.4.4",
+        "react-scripts": "5.0.1",
+        "react-scrollbars-custom": "^4.1.1",
+        "smoothscroll-polyfill": "^0.4.4",
+        "uuid": "^9.0.0"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject",
+        "estart": "electron .",
+        "ebuild-win": "electron-builder -w -c.extraMetadata.main=build/electron.js",
+        "ebuild-mac": "electron-builder -m -c.extraMetadata.main=build/electron.js",
+        "ebuild-linux": "electron-builder -l -c.extraMetadata.main=build/electron.js"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "electron": "^22.0.3",
+        "electron-builder": "^23.6.0"
+    },
+    "build": {
+        "appId": "com.electron.myapp",
+        "productName": "Akasha",
+        "files": [
+            "build/**/*",
+            "node_modules/**/*"
+        ],
+        "directories": {
+            "buildResources": "public"
+        },
+        "mac": {
+            "target": "dmg"
+        },
+        "win": {
+            "target": "nsis"
+        },
+        "linux": {
+            "target": "deb"
+        }
+    }
 }

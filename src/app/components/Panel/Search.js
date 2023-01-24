@@ -1,12 +1,8 @@
-import { TreeItem, TreeView } from "@mui/lab";
-import { Box, Input, InputAdornment, List, ListItem, ListItemButton, Tab, Tabs, Tooltip, Typography } from "@mui/material";
+import { Input, InputAdornment, Tab, Tabs } from "@mui/material";
 import { convert } from "html-to-text";
 import { useContext, useState } from "react";
 import { LeyLine } from "../../core/LeyLine";
 import IconButton from "../Button/IconButton";
-import ContextMenu from "../ContextMenu/ContextMenu";
-import ConfirmDialog from "../Dialog/ConfirmDialog";
-import NameDialog from "../Dialog/NameDialog";
 import Remix from "../Icon/Remix";
 export default function Search() {
 
@@ -46,8 +42,7 @@ export default function Search() {
                 onChange={e => _searchInput(e.target.value)}
                 endAdornment={
                     <InputAdornment position='end'>
-                        <IconButton icon={<Remix.eye fontSize='small' />} />
-                        <IconButton icon={<Remix.arrowRightCircle fontSize='small' />} onClick={searchIrminsul} />
+                        <IconButton icon={<Remix.search fontSize='small' />} onClick={searchIrminsul} />
                     </InputAdornment>
                 }
             />

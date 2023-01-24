@@ -1,4 +1,4 @@
-import { Box, Button, Input, InputAdornment, Step, StepContent, StepLabel, Stepper, Typography } from '@mui/material';
+import { Box, Input, InputAdornment, Step, StepContent, StepLabel, Stepper } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import IconButton from '../components/Button/IconButton';
 import Letter from '../components/Icon/Letter';

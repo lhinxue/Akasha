@@ -1,4 +1,3 @@
-import { useTheme } from '@mui/material';
 import { useContext, useEffect } from 'react';
 import Editor from '../components/Editor/Editor';
 import Sidebar from '../components/Sidebar/Sidebar';
