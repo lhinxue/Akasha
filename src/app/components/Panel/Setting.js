@@ -1,4 +1,4 @@
-import { Box, FormGroup, FormLabel, Slider } from "@mui/material";
+import { Box, FormGroup, FormLabel, Slider, Typography } from "@mui/material";
 import { useContext, useState } from "react";
 import { LeyLine } from "../../core/LeyLine";
 export default function Setting() {
@@ -10,13 +10,15 @@ export default function Setting() {
     const [color, _color] = useState(123)
     return (
         <>
+        <Typography component={'h1'}>Setting</Typography>
             <Box>
+            
+
                 <FormGroup>
                     <FormLabel>
                         Color
                     </FormLabel>
-                    <Slider value={color} max={360} onChange={(e, v) => _color(v)} onChangeCommitted={(e, v) => os._color(v)} />
-
+                    <Slider size="small" value={color} max={360} onChange={(e, v) => _color(v)} onChangeCommitted={(e, v) => os._color(v)} />
                 </FormGroup>
             </Box>
         </>

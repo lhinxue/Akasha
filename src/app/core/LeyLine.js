@@ -15,7 +15,9 @@ export default class LeyLines extends Component {
             history: [],
             irminsul: {
                 name: 'irminsul',
-                config: {},
+                config: {
+                    color: { primary: '#43a047', secondary: '#81c784' },
+                },
                 _: {
                     'a4522850-ac16-4ccc-a0bf-bb48a471f622': {
                         name: 'Parent node',
@@ -66,8 +68,10 @@ export default class LeyLines extends Component {
         this._irminsul(ims)
     }
     _color(hue) {
-        this.setState({ color: { primary: sys.hslToHex(hue, 41, 45), secondary: sys.hslToHex(hue, 38, 64) } })
+        let ims = this.state.irminsul
+        ims.config.color = { primary: sys.hslToHex(hue, 41, 45), secondary: sys.hslToHex(hue, 38, 64) }
 
+        this._irminsul(ims)
     }
 
     _irminsul(ims) {
@@ -245,7 +249,7 @@ export default class LeyLines extends Component {
         return (
             <LeyLine.Provider value={{
                 api: this.state.api,
-                color: { primary: this.state.color.primary, secondary: this.state.color.secondary },
+                color: { primary: this.state.irminsul.config.color.primary, secondary: this.state.irminsul.config.color.secondary },
                 history: this.state.history,
                 irminsul: this.state.irminsul,
                 msg: this.state.msg,

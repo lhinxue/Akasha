@@ -128,27 +128,71 @@ export default function Sidebar() {
                     }
                 },
                 '&.Credential': {
+                    overflow: 'hidden',
+                    '& h1': {
+                        // alignItems: 'center',
+                        borderBottom: '1px solid silver',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        fontSize: '1rem',
+                        fontVariant: 'small-caps',
+                        height: '34px',
+                        justifyContent: 'space-between',
+                        letterSpacing: '.2rem',
+                        lineHeight: '34px',
+                        padding: '0 10px',
+                        margin: '0'
+                    },
                     '&>div': {
-                        margin: '15px',
-                        width: 'calc(100% - 30px)',
+                        width: '100%',
+                        height: 'calc(100% - 70px)',
+                        overflow: 'auto',
                         '&>div': {
-                            marginBottom: '25px',
+                            margin: '10px',
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
                             '&>label': {
-                                fontVariant: 'small-caps',
-                                marginBottom: '10px',
+                                fontSize: '14px',
+                            },
+                            '&>*:nth-child(2)': {
+                                width: '60%'
                             }
                         }
                     }
                 },
                 '&.Setting': {
+                    overflow: 'hidden',
+                    '& h1': {
+                        // alignItems: 'center',
+                        borderBottom: '1px solid silver',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        fontSize: '1rem',
+                        fontVariant: 'small-caps',
+                        height: '34px',
+                        justifyContent: 'space-between',
+                        letterSpacing: '.2rem',
+                        lineHeight: '34px',
+                        padding: '0 10px',
+                        margin: '0'
+                    },
                     '&>div': {
-                        margin: '15px',
-                        width: 'calc(100% - 30px)',
+                        width: '100%',
+                        height: 'calc(100% - 70px)',
+                        overflow: 'auto',
                         '&>div': {
-                            marginBottom: '25px',
+                            margin: '10px',
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
                             '&>label': {
-                                fontVariant: 'small-caps',
-                                marginBottom: '10px',
+                                fontSize: '14px',
+                            },
+                            '&>*:nth-child(2)': {
+                                width: '60%'
                             }
                         }
                     }

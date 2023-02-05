@@ -81,51 +81,33 @@ export default function Editor() {
 
     // States
     const [document, _document] = useState('')
-    const [readOnly, _readOnly] = useState(true)
-    const [lock, _lock] = useState(true)
     const [editor, _editor] = useState(undefined)
 
     // Functions
-    const lockDocument = editor => {
-        _lock(true)
-        editor.enableReadOnlyMode('Kiana')
-    }
-    const unlockDocument = () => _lock(false)
-    const editDocument = () => {
-        if (lock) return
-        editor.disableReadOnlyMode('Kiana')
-        _readOnly(false)
-    }
-    const viewDocument = () => {
-        if (lock) return
-        editor.enableReadOnlyMode('Kiana')
-        _readOnly(true)
-    }
-    const saveDocument = () => {
-        let strDocName = os.getNode(api.node.split('=>'), 'name')
-        os.setNode(api.node.split('=>'), 'content', editor.getData(), () => os.msgOn(1, '"' + strDocName + '" Saved', 3))
-    }
     const onReady = editor => {
         _editor(editor)
-        lockDocument(editor)
+    }
+    const onChange = (event, editor) => {
+        try {
+            os.setNode(api.node.split('=>'), 'content', editor.getData())
+        } catch (error) {
+            console.warn(error)
+        }
     }
 
     // Effects
     useEffect(() => {
-        if (api.node !== '') {
-            unlockDocument()
-            if (history.length > 0) {
-                if (document !== editor.getData()) {
-                    let strDocName = os.getNode(history[history.length - 1].split('=>'), 'name')
-                    os.msgOn(0, 'Saving "' + strDocName + '"')
-                    os.setNode(history[history.length - 1].split('=>'), 'content', editor.getData(), () => os.msgOn(1, '"' + strDocName + '" Saved', 3))
-                }
+        try {
+            if (api.node !== '') {
+                _document(os.getNode(api.node.split('=>'), 'content'))
+                editor.disableReadOnlyMode('Kiana')
+
+            } else {
+                _document('')
+                editor.enableReadOnlyMode('Kiana')
             }
-            os.updateHistory(api.node)
-            _document(os.getNode(api.node.split('=>'), 'content'))
-        } else {
-            _document('')
-            try { lockDocument(editor) } catch (error) { }
+        } catch (error) {
+            console.warn(error)
         }
     }, [api.node])
 
@@ -192,7 +174,7 @@ export default function Editor() {
         <Box className={'Editor'} sx={sx}>
             <Box className={'Header'}>
                 <Box>
-                    <IconButton icon={<Remix.save />} onClick={saveDocument} tooltip={'Save'} tooltipPosition={'left'} />
+                    <IconButton icon={<Remix.save />} tooltip={'Save'} tooltipPosition={'left'} />
                 </Box>
                 <Breadcrumbs className='Breadcrumbs' separator='·'>
                     {
@@ -204,17 +186,14 @@ export default function Editor() {
                     }
                 </Breadcrumbs>
                 <Box>
-                    {
-                        readOnly ?
-                            <IconButton icon={<Remix.edit />} onClick={editDocument} tooltip={'Start Editing'} tooltipPosition={'bottom'} /> :
-                            <IconButton icon={<Remix.preview />} onClick={viewDocument} tooltip={'Preview'} tooltipPosition={'bottom'} />
-                    }
+                    <IconButton icon={<Remix.edit />} tooltip={'Start Editing'} tooltipPosition={'bottom'} />
                 </Box>
             </Box>
             <CKEditor
                 editor={Ckeditor}
                 config={EDITOR_CONFIG}
                 data={document}
+                onChange={onChange}
                 onReady={onReady}
             />
             <Downloader />
