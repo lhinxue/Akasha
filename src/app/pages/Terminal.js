@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import IconButton from '../components/Button/IconButton';
 import Letter from '../components/Icon/Letter';
 import Remix from '../components/Icon/Remix';
+import Message from '../components/LX/Message';
 import { LeyLine } from '../core/LeyLine';
 import sys from '../core/sys';
 import Page from '../templates/Page';
@@ -166,6 +167,7 @@ export default function Terminal() {
 
     return (
         <Page defaultColor>
+            <Message on text='nimama' type={1} loading/>
             <Box sx={sx}>
                 <Box className='Logo'>
                     <svg xmlns='http://www.w3.org/2000/svg' viewBox='-20 -29 40 60'>

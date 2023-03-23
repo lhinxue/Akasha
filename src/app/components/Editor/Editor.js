@@ -6,6 +6,7 @@ import { LeyLine } from "../../core/LeyLine";
 import Downloader from "../Button/Downloader";
 import IconButton from "../Button/IconButton";
 import Remix from "../Icon/Remix";
+import ReadOnly from '../ReadOnly/ReadOnly';
 
 const EDITOR_CONFIG = {
     toolbar: {
@@ -82,10 +83,12 @@ export default function Editor() {
     // States
     const [document, _document] = useState('')
     const [editor, _editor] = useState(undefined)
+    const [readOnly, _readOnly] = useState(true)
 
     // Functions
     const onReady = editor => {
         _editor(editor)
+        console.log('3')
     }
     const onChange = (event, editor) => {
         try {
@@ -100,11 +103,11 @@ export default function Editor() {
         try {
             if (api.node !== '') {
                 _document(os.getNode(api.node.split('=>'), 'content'))
-                editor.disableReadOnlyMode('Kiana')
+                _readOnly(false)
 
             } else {
                 _document('')
-                editor.enableReadOnlyMode('Kiana')
+                _readOnly(true)
             }
         } catch (error) {
             console.warn(error)
@@ -171,7 +174,7 @@ export default function Editor() {
     }
 
     return (
-        <Box className={'Editor'} sx={sx}>
+        <ReadOnly className={'Editor'} sx={sx} readOnly={readOnly}>
             <Box className={'Header'}>
                 <Box>
                     <IconButton icon={<Remix.save />} tooltip={'Save'} tooltipPosition={'left'} />
@@ -195,8 +198,9 @@ export default function Editor() {
                 data={document}
                 onChange={onChange}
                 onReady={onReady}
+                onInstanceReady={onReady}
             />
             <Downloader />
-        </Box>
+        </ReadOnly>
     )
 }
